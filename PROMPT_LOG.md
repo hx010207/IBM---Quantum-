@@ -88,15 +88,28 @@ IMPLEMENTATION ONLY — do not write any paper, abstract, related work, or citat
 
 ---
 
+## 6. Prompt 6: Top-Line Halt Banner Addition in STATUS.md
+```
+One addition to the autonomous run: if ANY halt condition fires (job failure, usage deviation, budget threshold) before Round 12 completes, write a single clear line to the top of STATUS.md like "HALTED AT ROUND X — AWAITING REVIEW — REASON: ..." so it's immediately visible when I check in, rather than buried in logs. Otherwise continue as configured — no further approval needed until Stage 4 completes or a halt fires.
+```
+
+---
+
 ## Status as of last report
 - Credentials working, 3 operational Heron r2 backends identified (`ibm_kingston`, `ibm_marrakesh`, `ibm_fez`), fixed layouts locked.
 - Billing confirmed: exactly 8 integer seconds charged per 10-circuit/2048-shot round on every backend — deterministic budget.
-- Schedule B locked: 12 rounds, 3 backends, train 1-5 / val 6-7 / test 8-12, projected 288s total (48% of 600s), 222s safety buffer.
-- Batch 1 (Rounds 1 & 2) complete on all 3 backends:
-  - Round 1: Oct 4 Evening baseline.
-  - Round 2: Oct 5 Daytime slot (~13.3h gap).
-- Cumulative QPU consumed: **72.000 s** across 9 total jobs (14.1% of 510.0s safety cap).
-- Switched to Maximum Compression cadence: remaining rounds 3–12 to be launched as soon as 4.0h hard floor clears per backend.
-- Autonomous pipeline progression through Stage 3 (simulations) and Stage 4 (features + experiments E1–E7) authorized; hard stop at Stage 4 report / claims audit.
+- Schedule B locked: 12 rounds, 3 backends, train 1-5 / val 6-7 / test 8-12.
+- Data Collection Progress:
+  - Round 1 (Oct 4 Evening baseline): Completed (24.0s).
+  - Round 2 (Oct 5 Daytime slot): Completed (24.0s, ~13.3h diurnal gap).
+  - Round 3 (Oct 5 Maximum Compression Cadence): Completed (24.0s, ~4.1-4.3h gap).
+    - `ibm_fez`: `db1nb5uegvvc73bht3jg` (8.0s, gap: 4.05h)
+    - `ibm_kingston`: `db1ni83id5ic73erde8g` (8.0s, gap: 4.27h)
+    - `ibm_marrakesh`: `db1nieivog1s73fidc70` (8.0s, gap: 4.27h)
+- Cumulative QPU consumed: **96.000 s** across 12 total jobs = **18.8%** of 510.0s safety cap (414.0s safe budget remaining; 504.0s of 600.0s Open Plan allowance remaining).
+- Top-line halt banner logic (`HALTED AT ROUND X — AWAITING REVIEW — REASON: ...`) integrated into orchestrator (`scripts/run_autonomous_pipeline.py`).
+- Autonomous pipeline orchestrator running in background: Round 4 locked until 4.0h floor clears at $\approx 19:47$ local time (~14:17 UTC).
+- Next milestone: Automatic continuation through Round 12 $\to$ Stage 3 (Simulations) $\to$ Stage 4 (Features, Experiments E1-E7, Claims Audit) $\to$ Final Stage 4 report & stop.
+
 
 

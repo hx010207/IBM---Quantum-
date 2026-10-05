@@ -118,8 +118,36 @@ def git_commit_and_push(commit_msg: str):
         logger.warning(f"Git sync encountered an exception: {e}")
 
 
+def record_halt_in_status(round_id: int, reason: str):
+    """Writes a single clear line to the top of STATUS.md upon any halt condition."""
+    status_file = PROJECT_ROOT / "STATUS.md"
+    halt_banner = f"HALTED AT ROUND {round_id} — AWAITING REVIEW — REASON: {reason}\n\n"
+    if status_file.exists():
+        content = status_file.read_text(encoding="utf-8")
+        lines = content.splitlines(keepends=True)
+        filtered_lines = [l for l in lines if not l.startswith("HALTED AT ROUND ")]
+        new_content = halt_banner + "".join(filtered_lines)
+    else:
+        new_content = halt_banner
+    status_file.write_text(new_content, encoding="utf-8")
+    logger.error(f"[STATUS.MD HALT BANNER WRITTEN]: {halt_banner.strip()}")
+    git_commit_and_push(f"HALT ALERT: Round {round_id} - {reason}")
+
+
+def clear_halt_in_status():
+    """Removes any previous halt banner from top of STATUS.md when pipeline is healthy."""
+    status_file = PROJECT_ROOT / "STATUS.md"
+    if status_file.exists():
+        content = status_file.read_text(encoding="utf-8")
+        lines = content.splitlines(keepends=True)
+        filtered_lines = [l for l in lines if not l.startswith("HALTED AT ROUND ")]
+        if len(filtered_lines) != len(lines):
+            status_file.write_text("".join(filtered_lines), encoding="utf-8")
+
+
 def update_status_file(latest_round: int, batch_complete: bool = False):
     """Updates STATUS.md with the latest round execution metrics and cumulative budget."""
+    clear_halt_in_status()
     status_file = PROJECT_ROOT / "STATUS.md"
     if not status_file.exists():
         return
@@ -130,6 +158,7 @@ def update_status_file(latest_round: int, batch_complete: bool = False):
     rem_safe = 510.0 - cum_qpu
 
     logger.info(f"STATUS update: Round {latest_round} recorded. Cumulative QPU: {cum_qpu:.2f}s ({cap_util:.1f}% of cap).")
+
 
 
 def print_status_report(config: dict, min_gap_hours: float):
@@ -201,21 +230,27 @@ def execute_round(round_id: int, min_gap_hours: float, backends: list) -> bool:
     proc = subprocess.run(cmd, cwd=PROJECT_ROOT, text=True)
 
     if proc.returncode != 0:
-        logger.error(f"HALT CONDITION: 03_collect_round.py failed on Round {round_id} with exit code {proc.returncode}!")
+        reason = f"03_collect_round.py exited with error code {proc.returncode}"
+        logger.error(f"HALT CONDITION: {reason} on Round {round_id}!")
+        record_halt_in_status(round_id, reason)
         return False
 
     # Step 3: Validate collected data and enforce halt conditions
     for b in backends:
         r_file = PROJECT_ROOT / "data" / "raw" / b / f"round_{round_id:03d}.json"
         if not r_file.exists():
-            logger.error(f"HALT CONDITION: Expected raw file {r_file} does not exist!")
+            reason = f"Missing expected raw record file {r_file.name} for backend {b}"
+            logger.error(f"HALT CONDITION: {reason}!")
+            record_halt_in_status(round_id, reason)
             return False
         with open(r_file, "r", encoding="utf-8") as f:
             rec = json.load(f)
         exec_time = rec.get("execution_time_seconds", 8.0)
         # Check >15% usage deviation from 8.0s baseline (6.8s to 9.2s)
         if abs(exec_time - 8.0) > 1.2:
-            logger.error(f"HALT CONDITION: Usage deviation > 15% on {b} (measured {exec_time:.2f}s vs 8.0s baseline)!")
+            reason = f"Usage deviation > 15% on {b} (measured {exec_time:.2f}s vs 8.0s baseline)"
+            logger.error(f"HALT CONDITION: {reason}!")
+            record_halt_in_status(round_id, reason)
             return False
 
     # Step 4: Check cumulative budget against 60% cap
@@ -226,9 +261,9 @@ def execute_round(round_id: int, min_gap_hours: float, backends: list) -> bool:
 
     # If round is less than 12 and budget already exceeded 60% cap, trigger safety halt
     if round_id < 12 and cum_qpu > cap_60_pct:
-        logger.error(
-            f"HALT CONDITION: Cumulative QPU {cum_qpu:.2f}s exceeded 60% safety cap ({cap_60_pct:.1f}s) before Round 12!"
-        )
+        reason = f"Cumulative QPU usage ({cum_qpu:.2f}s) exceeded 60% safety cap ({cap_60_pct:.1f}s)"
+        logger.error(f"HALT CONDITION: {reason} before Round 12!")
+        record_halt_in_status(round_id, reason)
         return False
 
     # Step 5: Update STATUS and Git after batch (every 2 rounds)
@@ -247,7 +282,9 @@ def run_stage_3():
     cmd = [sys.executable, "scripts/04_simulate.py"]
     proc = subprocess.run(cmd, cwd=PROJECT_ROOT, text=True)
     if proc.returncode != 0:
-        logger.error(f"Stage 3 (04_simulate.py) failed with exit code {proc.returncode}!")
+        reason = f"Stage 3 (04_simulate.py) failed with exit code {proc.returncode}"
+        logger.error(reason)
+        record_halt_in_status(12, reason)
         sys.exit(proc.returncode)
     logger.info("Stage 3 completed successfully.")
     git_commit_and_push("Stage 3 complete: S0, S1, S2 matching simulations generated")
@@ -264,7 +301,9 @@ def run_stage_4():
     cmd_feat = [sys.executable, "scripts/05_build_features.py"]
     proc_feat = subprocess.run(cmd_feat, cwd=PROJECT_ROOT, text=True)
     if proc_feat.returncode != 0:
-        logger.error(f"05_build_features.py failed with code {proc_feat.returncode}!")
+        reason = f"Stage 4 (05_build_features.py) failed with exit code {proc_feat.returncode}"
+        logger.error(reason)
+        record_halt_in_status(12, reason)
         sys.exit(proc_feat.returncode)
 
     # 4B. Run Experiments E1-E7
@@ -272,7 +311,9 @@ def run_stage_4():
     cmd_exp = [sys.executable, "scripts/06_run_experiments.py"]
     proc_exp = subprocess.run(cmd_exp, cwd=PROJECT_ROOT, text=True)
     if proc_exp.returncode != 0:
-        logger.error(f"06_run_experiments.py failed with code {proc_exp.returncode}!")
+        reason = f"Stage 4 (06_run_experiments.py) failed with exit code {proc_exp.returncode}"
+        logger.error(reason)
+        record_halt_in_status(12, reason)
         sys.exit(proc_exp.returncode)
 
     # 4C. Claims Audit
@@ -280,11 +321,14 @@ def run_stage_4():
     cmd_audit = [sys.executable, "scripts/09_claims_audit.py"]
     proc_audit = subprocess.run(cmd_audit, cwd=PROJECT_ROOT, text=True)
     if proc_audit.returncode != 0:
-        logger.error(f"09_claims_audit.py failed with code {proc_audit.returncode}!")
+        reason = f"Stage 4 (09_claims_audit.py) failed with exit code {proc_audit.returncode}"
+        logger.error(reason)
+        record_halt_in_status(12, reason)
         sys.exit(proc_audit.returncode)
 
     logger.info("Stage 4 completed successfully.")
     git_commit_and_push("Stage 4 complete: Feature dataset, Experiments E1-E7, and Claims Audit")
+
 
 
 def report_final_stage4_results(config: dict):

@@ -1,6 +1,6 @@
 {
-  "cumulative_quantum_seconds": 72.0,
+  "cumulative_quantum_seconds": 96.0,
   "allowance_seconds": 600.0,
   "max_allowed_seconds": 510.0,
-  "remaining_safe_seconds": 438.0
+  "remaining_safe_seconds": 414.0
 }

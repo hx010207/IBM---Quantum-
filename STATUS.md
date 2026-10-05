@@ -113,17 +113,29 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 | **`ibm_kingston`** | `db1jp32vog1s73fi7s60` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **13.41 h** | 2026-10-05 10:42:35 | Completed | [`data/raw/ibm_kingston/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_002.json) |
 | **`ibm_marrakesh`** | `db1jq71b694s73dscqbg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **13.44 h** | 2026-10-05 10:48:47 | Completed | [`data/raw/ibm_marrakesh/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_002.json) |
 
+#### Round 3 (Oct 5 Maximum Compression Cadence — Hard Floor Cleared $\ge 4.0\,\text{h}$)
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Wall-Clock Gap from R2 | Calibration Date | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db1nb5uegvvc73bht3jg` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **4.05 h** | 2026-10-05 15:40:02 | Completed | [`data/raw/ibm_fez/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_003.json) |
+| **`ibm_kingston`** | `db1ni83id5ic73erde8g` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **4.27 h** | 2026-10-05 15:42:10 | Completed | [`data/raw/ibm_kingston/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_003.json) |
+| **`ibm_marrakesh`** | `db1nieivog1s73fidc70` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **4.27 h** | 2026-10-05 15:45:15 | Completed | [`data/raw/ibm_marrakesh/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_003.json) |
+
 ### Cumulative QPU Budget Status
 - **Initial Probes Consumption (3 backends)**: **24.000 s**
 - **Round 1 Consumption (3 backends)**: **24.000 s**
 - **Round 2 Consumption (3 backends)**: **24.000 s**
-- **Cumulative QPU Consumed So Far**: **72.000 s** across 9 total jobs
+- **Round 3 Consumption (3 backends)**: **24.000 s**
+- **Cumulative QPU Consumed So Far**: **96.000 s** across 12 total jobs
 - **85% Safety Cap (Ceiling)**: **510.0 s**
-- **Safety Cap Utilization**: **14.1 %** (well below the 50% visibility threshold)
-- **Total Monthly Allowance Remaining**: **528.000 s** (88.0% intact out of 600.0s)
-- **Remaining Safe QPU Budget**: **438.000 s**
+- **Safety Cap Utilization**: **18.8 %** (well below the 50% visibility threshold)
+- **Total Monthly Allowance Remaining**: **504.000 s** (84.0% intact out of 600.0s)
+- **Remaining Safe QPU Budget**: **414.000 s**
 
-### Next Action Gate (Awaiting Author Instruction for Batch 2: Rounds 3 & 4)
-Per Directive 4, reporting is batched every 2 rounds. Rounds 1 & 2 are complete. For Round 3, the next collection window should be slotted after a $\sim 10\text{--}12\,\text{hour}$ diurnal gap (evening of Oct 5, $\ge 4\,\text{h}$ safety floor strictly guarded). Awaiting author confirmation before proceeding with Batch 2.
+### Execution Mode: Autonomous Maximum Compression Cadence
+- **Protocol**: Autonomous execution through Round 12 $\to$ Stage 3 (Simulations S0/S1/S2) $\to$ Stage 4 (Features, Experiments E1-E7, Claims Audit).
+- **Hard-Floor Guard**: Strictly $\ge 4.0\,\text{hours}$ per backend maintained between rounds.
+- **Halt Trigger Behavior**: If ANY halt condition fires (job failure, usage deviation >15%, budget cap >60%), the top line of `STATUS.md` is immediately overwritten with `HALTED AT ROUND X — AWAITING REVIEW — REASON: ...` and execution halts.
+- **Current Status**: Round 4 locked until 4.0h floor clears at $\approx 19:47$ local time (~14:17 UTC).
+
 
 
