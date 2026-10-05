@@ -145,9 +145,24 @@ def main():
 
     # Real Hardware Simulators (simulating against real hardware backends)
     import numpy as np
+    try:
+        from dotenv import load_dotenv
+        load_dotenv()
+    except ImportError:
+        pass
+
     token = os.environ.get("QISKIT_IBM_TOKEN")
+    instance = os.environ.get("QISKIT_IBM_INSTANCE")
+    channel = os.environ.get("QISKIT_IBM_CHANNEL", "ibm_quantum_platform")
+
     from qiskit_ibm_runtime import QiskitRuntimeService
-    service = QiskitRuntimeService(token=token) if token else QiskitRuntimeService()
+    if token and instance:
+        service = QiskitRuntimeService(channel=channel, token=token, instance=instance)
+    elif token:
+        service = QiskitRuntimeService(channel=channel, token=token)
+    else:
+        service = QiskitRuntimeService()
+
     
     real_backends_cfg = config["backends"].get("real_backends", [])
     for b_entry in real_backends_cfg:
