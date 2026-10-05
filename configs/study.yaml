@@ -1,0 +1,121 @@
+study:
+  name: qfp_chronological_fingerprinting
+  seed: 42
+  stochastic_seeds:
+  - 42
+  - 43
+  - 44
+  - 45
+  - 46
+backends:
+  real_backends:
+  - name: ibm_fez
+    num_qubits: 156
+    gate_2q: cz
+    layout:
+    - 137
+    - 147
+    - 146
+    edge1_error: 0.002609976919942164
+    edge2_error: 0.002370870162305333
+    avg_readout_error: 0.0035807291666666665
+    composite_error: 0.008561576248914163
+  - name: ibm_kingston
+    num_qubits: 156
+    gate_2q: cz
+    layout:
+    - 89
+    - 90
+    - 91
+    edge1_error: 0.001615502326344942
+    edge2_error: 0.0017323009372966214
+    avg_readout_error: 0.0035807291666666665
+    composite_error: 0.006928532430308229
+  - name: ibm_marrakesh
+    num_qubits: 156
+    gate_2q: cz
+    layout:
+    - 4
+    - 5
+    - 6
+    edge1_error: 0.001847288062314295
+    edge2_error: 0.0014656285626526988
+    avg_readout_error: 0.004638671875
+    composite_error: 0.007951588499966994
+  dryrun_backends:
+  - name: fake_sherbrooke
+    layout:
+    - 112
+    - 126
+    - 125
+  - name: fake_brisbane
+    layout:
+    - 12
+    - 17
+    - 30
+  - name: fake_kyiv
+    layout:
+    - 0
+    - 14
+    - 18
+circuits:
+  num_qubits: 3
+  circuits_list:
+  - id: c01_prep_000
+    description: Prepare and measure |000> state
+  - id: c02_prep_111
+    description: Prepare and measure |111> state
+  - id: c03_bell_01
+    description: Bell state on physical edge (0, 1)
+  - id: c04_bell_12
+    description: Bell state on physical edge (1, 2)
+  - id: c05_ghz_012
+    description: GHZ state generation 0 -> 1 -> 2
+  - id: c06_ghz_210
+    description: GHZ state generation 2 -> 1 -> 0
+  - id: c07_clifford_depth8
+    description: Seeded random Clifford circuit, depth ~8
+    seed: 42
+  - id: c08_clifford_depth24
+    description: Seeded random Clifford circuit, depth ~24
+    seed: 43
+  - id: c09_mirror_depth12
+    description: Seeded mirror circuit, depth ~12 (inversion barrier-protected)
+    seed: 44
+  - id: c10_mirror_depth24_delay
+    description: Seeded mirror circuit, depth ~24 with inserted delay
+    seed: 45
+    delay_duration_dt: 7500
+    delay_duration_us: 30.0
+sampling:
+  shots_per_circuit: 2048
+  chunks_per_round: 8
+  shots_per_chunk: 256
+  rounds_target: 12
+splits:
+  train_rounds:
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
+  val_rounds:
+  - 6
+  - 7
+  test_rounds:
+  - 8
+  - 9
+  - 10
+  - 11
+  - 12
+  leakage_comparison: random_split_chunk_level
+detection:
+  fpr_targets:
+  - 0.01
+  - 0.05
+  operating_point: eer
+  outlier_fraction_val: 0.05
+budget:
+  monthly_allowance_seconds: 600.0
+  safety_cap_fraction: 0.85
+  max_allowed_quantum_seconds: 510.0

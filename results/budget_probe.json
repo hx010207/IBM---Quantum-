@@ -1,0 +1,81 @@
+{
+  "timestamp": "2026-10-04T16:21:28.205617Z",
+  "mode": "real_hardware",
+  "probe_backend": "ibm_fez",
+  "probe_job_id": "db17psivog1s73fhp4v0",
+  "shots_per_circuit": 2048,
+  "num_circuits": 10,
+  "dt_seconds": 4e-09,
+  "c10_delay_us": 30.0,
+  "c10_delay_dt": 7500,
+  "fixed_layout": [
+    137,
+    147,
+    146
+  ],
+  "queue_time_seconds": 2.044006,
+  "wall_time_seconds": 14.682528734207153,
+  "measured_round_quantum_seconds": 8.0,
+  "measured_per_circuit_quantum_seconds": 0.8,
+  "actual_remaining_qpu_seconds": 584.0,
+  "actual_total_allocation_seconds": 600.0,
+  "actual_consumed_qpu_seconds": 16.0,
+  "safety_cap_seconds": 496.4,
+  "safety_cap_fraction": 0.85,
+  "candidate_schedules": [
+    {
+      "option_id": 1,
+      "num_backends": 2,
+      "rounds_target": 8,
+      "total_circuits": 160,
+      "projected_quantum_seconds": 128.0,
+      "utilization_pct": 21.91780821917808,
+      "fits_safety_cap": true
+    },
+    {
+      "option_id": 2,
+      "num_backends": 2,
+      "rounds_target": 10,
+      "total_circuits": 200,
+      "projected_quantum_seconds": 160.0,
+      "utilization_pct": 27.397260273972602,
+      "fits_safety_cap": true
+    },
+    {
+      "option_id": 3,
+      "num_backends": 2,
+      "rounds_target": 12,
+      "total_circuits": 240,
+      "projected_quantum_seconds": 192.0,
+      "utilization_pct": 32.87671232876712,
+      "fits_safety_cap": true
+    },
+    {
+      "option_id": 4,
+      "num_backends": 3,
+      "rounds_target": 8,
+      "total_circuits": 240,
+      "projected_quantum_seconds": 192.0,
+      "utilization_pct": 32.87671232876712,
+      "fits_safety_cap": true
+    },
+    {
+      "option_id": 5,
+      "num_backends": 3,
+      "rounds_target": 10,
+      "total_circuits": 300,
+      "projected_quantum_seconds": 240.0,
+      "utilization_pct": 41.0958904109589,
+      "fits_safety_cap": true
+    },
+    {
+      "option_id": 6,
+      "num_backends": 3,
+      "rounds_target": 12,
+      "total_circuits": 360,
+      "projected_quantum_seconds": 288.0,
+      "utilization_pct": 49.31506849315068,
+      "fits_safety_cap": true
+    }
+  ]
+}

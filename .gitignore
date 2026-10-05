@@ -1,0 +1,35 @@
+# Environment and credentials
+.env
+.env.*
+*.token
+*credential*
+ibm_quantum_token.txt
+qiskit_token.txt
+*.key
+*.pem
+
+
+# Python cache and bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+
+# IDE and OS
+.vscode/
+.idea/
+*.swp
+*~
+.DS_Store
+Thumbs.db
+
+# Dry run artifacts can be local
+dryrun/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
