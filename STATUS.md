@@ -1,3 +1,5 @@
+HALTED AT ROUND 5 — AWAITING REVIEW — REASON: 03_collect_round.py exited with error code 1
+
 # Project Status & Milestone Tracking
 
 ## Stage 0: Setup, Environment, Architecture & Dry-Run Pipeline Verification
