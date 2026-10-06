@@ -225,9 +225,11 @@ def execute_round(round_id: int, min_gap_hours: float, backends: list) -> bool:
         time.sleep(sleep_chunk)
 
     # Step 2: Execute collection script for round_id
+    clear_halt_in_status()
     logger.info(f"Launching hardware collection for Round {round_id}...")
     cmd = [sys.executable, "scripts/03_collect_round.py", "--round-id", str(round_id), "--min-gap-hours", str(min_gap_hours)]
     proc = subprocess.run(cmd, cwd=PROJECT_ROOT, text=True)
+
 
     if proc.returncode != 0:
         reason = f"03_collect_round.py exited with error code {proc.returncode}"

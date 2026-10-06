@@ -163,12 +163,14 @@ def run_collection_round(
     
     # 1. Build circuits and transpile
     logical_circuits = build_benchmark_circuits(seed=seed, backend=backend)
-    transpiled = transpile_benchmark_circuits(
+    transpiled, transpile_path = transpile_benchmark_circuits(
         logical_circuits,
         backend=backend,
         initial_layout=layout,
         optimization_level=1,
+        return_path=True,
     )
+
     
     # 2. Extract backend calibration snapshot
     props_snapshot = extract_backend_properties_snapshot(backend, layout)
@@ -261,6 +263,7 @@ def run_collection_round(
         "round_id": round_id,
         "backend": backend_name,
         "provenance": provenance,
+        "transpile_path": transpile_path,
         "physical_layout": layout,
         "shots_per_circuit": shots,
         "num_chunks": num_chunks,
@@ -271,6 +274,7 @@ def run_collection_round(
         "properties_snapshot": props_snapshot,
         "circuits": circuits_data,
     }
+
     
     validate_record_provenance(record, is_dryrun=is_dryrun)
     

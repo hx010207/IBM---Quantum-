@@ -184,41 +184,101 @@ def transpile_benchmark_circuits(
     backend: Any,
     initial_layout: List[int],
     optimization_level: int = 1,
-) -> Dict[str, QuantumCircuit]:
+    force_path: Optional[str] = None,
+    return_path: bool = False,
+) -> Union[Dict[str, QuantumCircuit], Tuple[Dict[str, QuantumCircuit], str]]:
     """Transpiles benchmark circuits to native backend target instructions.
     
     Fixed physical layout and scheduling ensures deterministic mapping.
+    Attempts ALAP scheduling by default when delays are present, with a deterministic
+    fallback to basis_gates + coupling_map if backend timing constraints or
+    duration lookup fail.
     
     Args:
         circuits: Logical benchmark circuits.
         backend: IBM hardware backend or fake backend object.
         initial_layout: Physical qubit indices (e.g. [0, 1, 2]).
         optimization_level: Transpiler optimization level (default 1).
+        force_path: If 'alap', enforces ALAP path; if 'fallback', enforces fallback path.
+        return_path: If True, returns tuple of (transpiled_dict, path_used).
         
     Returns:
-        Dictionary of transpiled native QuantumCircuits.
+        Dictionary of transpiled native QuantumCircuits (or tuple if return_path=True).
     """
     transpiled = {}
     circuit_list = list(circuits.values())
-    
-    # Check if any circuit contains delays
     has_delay = any(any(inst.operation.name == "delay" for inst in qc.data) for qc in circuit_list)
-    scheduling = "alap" if has_delay else None
     
-    t_list = transpile(
-        circuit_list,
-        backend=backend,
-        initial_layout=initial_layout,
-        optimization_level=optimization_level,
-        scheduling_method=scheduling,
-        seed_transpiler=42,
-    )
+    transpile_path = "standard"
+    t_list = None
     
+    if force_path == "fallback":
+        transpile_path = "fallback"
+        try:
+            t_list = transpile(
+                circuit_list,
+                basis_gates=getattr(backend, "operation_names", None),
+                coupling_map=getattr(backend, "coupling_map", None),
+                initial_layout=initial_layout,
+                optimization_level=optimization_level,
+                seed_transpiler=42,
+            )
+        except Exception:
+            t_list = transpile(
+                circuit_list,
+                backend=backend,
+                initial_layout=initial_layout,
+                optimization_level=optimization_level,
+                scheduling_method=None,
+                seed_transpiler=42,
+            )
+    else:
+        scheduling = "alap" if has_delay else None
+        try:
+            t_list = transpile(
+                circuit_list,
+                backend=backend,
+                initial_layout=initial_layout,
+                optimization_level=optimization_level,
+                scheduling_method=scheduling,
+                seed_transpiler=42,
+            )
+            transpile_path = "alap" if has_delay else "standard"
+        except Exception as e:
+            if has_delay:
+                transpile_path = "fallback"
+                try:
+                    t_list = transpile(
+                        circuit_list,
+                        basis_gates=getattr(backend, "operation_names", None),
+                        coupling_map=getattr(backend, "coupling_map", None),
+                        initial_layout=initial_layout,
+                        optimization_level=optimization_level,
+                        seed_transpiler=42,
+                    )
+                except Exception:
+                    t_list = transpile(
+                        circuit_list,
+                        backend=backend,
+                        initial_layout=initial_layout,
+                        optimization_level=optimization_level,
+                        scheduling_method=None,
+                        seed_transpiler=42,
+                    )
+            else:
+                raise e
+
     for original_id, t_qc in zip(circuits.keys(), t_list):
         t_qc.name = original_id
+        if t_qc.metadata is None:
+            t_qc.metadata = {}
+        t_qc.metadata["transpile_path"] = transpile_path
         transpiled[original_id] = t_qc
         
+    if return_path:
+        return transpiled, transpile_path
     return transpiled
+
 
 
 def compute_ideal_probabilities(circuits: Dict[str, QuantumCircuit]) -> Dict[str, np.ndarray]:

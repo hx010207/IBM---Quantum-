@@ -790,5 +790,6 @@
         }
       ]
     }
-  }
+  },
+  "transpile_path": "alap"
 }

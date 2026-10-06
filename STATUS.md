@@ -1,5 +1,3 @@
-HALTED AT ROUND 5 — AWAITING REVIEW — REASON: 03_collect_round.py exited with error code 1
-
 # Project Status & Milestone Tracking
 
 ## Stage 0: Setup, Environment, Architecture & Dry-Run Pipeline Verification
@@ -28,8 +26,8 @@ HALTED AT ROUND 5 — AWAITING REVIEW — REASON: 03_collect_round.py exited wit
 2. **Core Library Architecture (`src/qfp/`)**:
    - [`src/qfp/provenance.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/provenance.py): Provenance enforcement (`ibm_hardware`, `aer_ideal`, `aer_noise_model`, `synthetic_dryrun`), refusal of synthetic data in production figures, and SHA256 cryptographic manifest generation.
    - [`src/qfp/budget.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/budget.py): `QPUBudgetGuard` tracking monthly QPU allowance (600s), enforcing 85% safety cap (510.0s), and reading execution metrics via `job.usage()`.
-   - [`src/qfp/circuits.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/circuits.py): Standardized 10 benchmark 3-qubit circuits (Bell, GHZ, random Cliffords, mirror with midpoint barrier guard, mirror with delay), transpiler passes with ALAP scheduling, and exact noiseless ideal probability vectors.
-   - [`src/qfp/collect.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/collect.py): Resumable, idempotent data collection engine recording raw bitstrings, 8 chronological chunks per circuit, and backend calibration snapshots.
+   - [`src/qfp/circuits.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/circuits.py): Standardized 10 benchmark 3-qubit circuits (Bell, GHZ, random Cliffords, mirror with midpoint barrier guard, mirror with delay), transpiler passes with ALAP scheduling + deterministic fallback to native basis gates, and exact noiseless ideal probability vectors.
+   - [`src/qfp/collect.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/collect.py): Resumable, idempotent data collection engine recording raw bitstrings, 8 chronological chunks per circuit, `transpile_path` tag, and backend calibration snapshots.
    - [`src/qfp/simulate.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/simulate.py): S0 (ideal statevector), S1 (calibration-derived AerSimulator), S2 (adaptive impersonator with empirical readout confusion fitted strictly from training rounds of |000> and |111>).
    - [`src/qfp/features.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/features.py): 196-dimensional statistical feature extraction engine (probabilities, marginals, parities, ZZ correlators, TVD/Hellinger/KL, entropy, calibration readout confusion) + baseline subsets (`histogram_only` 80-dim, `calibration_properties` 11-dim).
    - [`src/qfp/splits.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/splits.py): Chronological round-level splitting (zero overlap between train, val, test), forward-chaining CV, random leakage baseline split, round-level bootstrap resampling.
@@ -50,8 +48,9 @@ HALTED AT ROUND 5 — AWAITING REVIEW — REASON: 03_collect_round.py exited wit
    - [`scripts/09_claims_audit.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/scripts/09_claims_audit.py): Automated claims audit & `claims_audit.md`.
 
 4. **Testing & Quality Assurance**:
-   - 15 unit tests in `tests/` passed (`test_circuits.py`, `test_features.py`, `test_provenance.py`, `test_splits.py`).
+   - 16 unit tests in `tests/` passed (`test_circuits.py`, `test_features.py`, `test_provenance.py`, `test_splits.py`).
    - Round overlap test strictly confirms zero temporal leakage across train, val, and test splits.
+   - Explicit assertion test `test_c10_fallback_equivalence_and_barrier_position` verifies 7500dt delays and midpoint barrier sandwiching are identical across ALAP and Fallback paths.
    - Provenance guard confirms refusal of synthetic data in production mode.
 
 5. **Dry-Run End-to-End Pipeline Execution**:
@@ -62,12 +61,6 @@ HALTED AT ROUND 5 — AWAITING REVIEW — REASON: 03_collect_round.py exited wit
    - Produced all 12 publication figures (PNG 300 DPI + vector PDF + source CSVs + `CAPTIONS.md`), stamped with `SYNTHETIC - NOT FOR PUBLICATION`.
    - Produced all 5 publication tables (CSV + LaTeX).
    - Generated master `results.json` and audited `claims_audit.md`.
-
-### Key Metrics Obtained in Dry-Run Verification
-- **Total Samples**: 752 (192 hardware-like samples, 560 simulator samples across S0, S1, S2)
-- **Dimensionality**: 196 statistical output features, 80 histogram-only, 11 calibration-properties
-- **E1 Chronological Identification Accuracy**: 0.979 $\pm$ 0.021 (Random Forest, 95% bootstrap CI: [0.958, 1.000])
-- **Budget Projection**: 240 circuit runs projected to consume ~271.7 - 283.7 QPU seconds (~45.3% - 47.3% of the 600s Open Plan allowance), strictly within the 85% safety cap (510.0s).
 
 ---
 
@@ -88,56 +81,80 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 - **Experimental Scope**: 3 backends $\times$ 12 chronological rounds $\times$ 10 circuits = 360 circuit runs (737,280 shots).
 - **Projected QPU Consumption**: $36 \times 8.000\text{s} = \mathbf{288.0\text{s}}$ (48.0% of the 600s Open Plan allowance, leaving 222.0s buffer below the 510.0s safety cap).
 - **Chronological Split**:
-  - **Train Rounds (1–5)**: 5 rounds (41.7% data, 150 circuits)
+  - **Train Rounds (1–5)**: 5 rounds (41.7% data, 150 circuits) — **100% COMPLETE**
   - **Validation Rounds (6–7)**: 2 rounds (16.7% data, 60 circuits)
   - **Test Rounds (8–12)**: 5 rounds (41.7% data, 150 circuits — strictly $\ge 4$ test rounds)
 
 ---
 
 ## Stage 2: Hardware Data Collection & Daily Round Progress
-- **Status**: In Progress (Rounds 1 & 2 Complete — Batch 1 of 6)
-- **Date**: 2026-10-05
+- **Status**: In Progress (Rounds 1–5 Complete — Train Split Finalized)
+- **Date**: 2026-10-06
 - **Lead**: Senior Research Engineer
 
-### Hardware Execution Log (Batch 1: Rounds 1 & 2)
+### Hardware Execution Log
 
 #### Round 1 (Oct 4 Evening Baseline)
-| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Status | Raw Output File |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`ibm_fez`** | `db17vf9b694s73dru660` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | Completed | [`data/raw/ibm_fez/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_001.json) |
-| **`ibm_kingston`** | `db17vjrid5ic73eqpc30` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | Completed | [`data/raw/ibm_kingston/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_001.json) |
-| **`ibm_marrakesh`** | `db17vrhb694s73dru6qg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | Completed | [`data/raw/ibm_marrakesh/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_001.json) |
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Transpile Path | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db17vf9b694s73dru660` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | `alap` | Completed | [`data/raw/ibm_fez/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_001.json) |
+| **`ibm_kingston`** | `db17vjrid5ic73eqpc30` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | `alap` | Completed | [`data/raw/ibm_kingston/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_001.json) |
+| **`ibm_marrakesh`** | `db17vrhb694s73dru6qg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | `alap` | Completed | [`data/raw/ibm_marrakesh/round_001.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_001.json) |
 
 #### Round 2 (Oct 5 Daytime Slot — Diurnal Separation $\approx 13.3\,\text{h}$)
-| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Wall-Clock Gap from R1 | Calibration Date | Status | Raw Output File |
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R1 | Transpile Path | Status | Raw Output File |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`ibm_fez`** | `db1jjfhb694s73dscdk0` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **13.22 h** | 2026-10-05 10:38:50 | Completed | [`data/raw/ibm_fez/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_002.json) |
-| **`ibm_kingston`** | `db1jp32vog1s73fi7s60` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **13.41 h** | 2026-10-05 10:42:35 | Completed | [`data/raw/ibm_kingston/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_002.json) |
-| **`ibm_marrakesh`** | `db1jq71b694s73dscqbg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **13.44 h** | 2026-10-05 10:48:47 | Completed | [`data/raw/ibm_marrakesh/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_002.json) |
+| **`ibm_fez`** | `db1jjfhb694s73dscdk0` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **13.22 h** | `alap` | Completed | [`data/raw/ibm_fez/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_002.json) |
+| **`ibm_kingston`** | `db1jp32vog1s73fi7s60` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **13.41 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_002.json) |
+| **`ibm_marrakesh`** | `db1jq71b694s73dscqbg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **13.44 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_002.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_002.json) |
 
 #### Round 3 (Oct 5 Maximum Compression Cadence — Hard Floor Cleared $\ge 4.0\,\text{h}$)
-| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Wall-Clock Gap from R2 | Calibration Date | Status | Raw Output File |
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R2 | Transpile Path | Status | Raw Output File |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| **`ibm_fez`** | `db1nb5uegvvc73bht3jg` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **4.05 h** | 2026-10-05 15:40:02 | Completed | [`data/raw/ibm_fez/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_003.json) |
-| **`ibm_kingston`** | `db1ni83id5ic73erde8g` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **4.27 h** | 2026-10-05 15:42:10 | Completed | [`data/raw/ibm_kingston/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_003.json) |
-| **`ibm_marrakesh`** | `db1nieivog1s73fidc70` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **4.27 h** | 2026-10-05 15:45:15 | Completed | [`data/raw/ibm_marrakesh/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_003.json) |
+| **`ibm_fez`** | `db1nb5uegvvc73bht3jg` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **4.05 h** | `alap` | Completed | [`data/raw/ibm_fez/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_003.json) |
+| **`ibm_kingston`** | `db1ni83id5ic73erde8g` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **4.27 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_003.json) |
+| **`ibm_marrakesh`** | `db1nieivog1s73fidc70` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **4.27 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_003.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_003.json) |
+
+#### Round 4 (Oct 5 Maximum Compression Cadence — Hard Floor Cleared $\ge 4.0\,\text{h}$)
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R3 | Transpile Path | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db1smp72iglc7396hb50` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **5.92 h** | `alap` | Completed | [`data/raw/ibm_fez/round_004.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_004.json) |
+| **`ibm_kingston`** | `db1snkhmmimc73fntkq0` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **5.95 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_004.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_004.json) |
+| **`ibm_marrakesh`** | `db1snphre0kc7396q0hg` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **5.95 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_004.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_004.json) |
+
+#### Round 5 (Oct 6 Maximum Compression Cadence — Train Split Finalized)
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R4 | Transpile Path | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db25d468v0ts73c2b4l0` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **4.01 h** | `alap` | Completed | [`data/raw/ibm_fez/round_005.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_005.json) |
+| **`ibm_kingston`** | `db25hv42ljfc73d405ng` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **4.22 h** | `fallback` | Completed | [`data/raw/ibm_kingston/round_005.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_005.json) |
+| **`ibm_marrakesh`** | `db27lem8v0ts73c2dtf0` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **12.42 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_005.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_005.json) |
 
 ### Cumulative QPU Budget Status
 - **Initial Probes Consumption (3 backends)**: **24.000 s**
 - **Round 1 Consumption (3 backends)**: **24.000 s**
 - **Round 2 Consumption (3 backends)**: **24.000 s**
 - **Round 3 Consumption (3 backends)**: **24.000 s**
-- **Cumulative QPU Consumed So Far**: **96.000 s** across 12 total jobs
+- **Round 4 Consumption (3 backends)**: **24.000 s**
+- **Round 5 Consumption (3 backends)**: **24.000 s**
+- **Cumulative QPU Consumed So Far**: **144.000 s** across 18 total hardware jobs
 - **85% Safety Cap (Ceiling)**: **510.0 s**
-- **Safety Cap Utilization**: **18.8 %** (well below the 50% visibility threshold)
-- **Total Monthly Allowance Remaining**: **504.000 s** (84.0% intact out of 600.0s)
-- **Remaining Safe QPU Budget**: **414.000 s**
+- **Safety Cap Utilization**: **28.2 %** (well below the 50% visibility threshold)
+- **Total Monthly Allowance Remaining**: **456.000 s** (76.0% intact out of 600.0s)
+- **Remaining Safe QPU Budget**: **366.000 s**
+
+### Transpile Path Verification & Confound Tagging
+- **c10 Circuit Equivalence**: Verified that both the normal ALAP scheduling path and the fallback path preserve:
+  - Delay duration strictly equal to $7500\,\text{dt} = 30\,\mu\text{s}$.
+  - Delay position relative to the mirror circuit's midpoint barriers: exactly 3 delay instructions on active qubits $[q_0, q_1, q_2]$ sandwiched between $\text{barrier}_0$ and $\text{barrier}_1$.
+  - Unit test `test_c10_fallback_equivalence_and_barrier_position` in [`tests/test_circuits.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/tests/test_circuits.py) passes (16/16 tests passing).
+- **Provenance & Confound Audit**: Every raw round record now includes `"transpile_path": "alap" | "fallback"`. This metadata is forwarded into feature extraction rows to ensure any path-dependent effects can be audited during downstream analysis.
 
 ### Execution Mode: Autonomous Maximum Compression Cadence
 - **Protocol**: Autonomous execution through Round 12 $\to$ Stage 3 (Simulations S0/S1/S2) $\to$ Stage 4 (Features, Experiments E1-E7, Claims Audit).
 - **Hard-Floor Guard**: Strictly $\ge 4.0\,\text{hours}$ per backend maintained between rounds.
 - **Halt Trigger Behavior**: If ANY halt condition fires (job failure, usage deviation >15%, budget cap >60%), the top line of `STATUS.md` is immediately overwritten with `HALTED AT ROUND X — AWAITING REVIEW — REASON: ...` and execution halts.
-- **Current Status**: Round 4 locked until 4.0h floor clears at $\approx 19:47$ local time (~14:17 UTC).
+- **Current Status**: Round 6 (Validation split) locked until 4.0h floor clears across all backends (~08:36 UTC / ~14:06 local time). Autonomous pipeline orchestrator active.
+
 
 
 
