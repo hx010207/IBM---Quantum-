@@ -376,6 +376,55 @@ def main():
         json.dump(e7_results, f, indent=2)
     all_results["E7_budget_security"] = e7_results
 
+    # =========================================================================
+    # Fallback Transpilation Confound Sanity Check
+    # =========================================================================
+    logger.info("Executing fallback transpilation confound sanity check...")
+    fallback_mask = (real_df["transpile_path"] == "fallback") if "transpile_path" in real_df.columns else pd.Series(False, index=real_df.index)
+    fallback_check = {}
+    if fallback_mask.any():
+        fallback_backends = sorted(real_df.loc[fallback_mask, "backend"].unique())
+        for fb_backend in fallback_backends:
+            b_df = real_df[real_df["backend"] == fb_backend]
+            b_alap = b_df[b_df["transpile_path"] != "fallback"]
+            b_fall = b_df[b_df["transpile_path"] == "fallback"]
+            
+            centroid = b_alap[full_feats].mean(axis=0).values
+            alap_dists = np.linalg.norm(b_alap[full_feats].values - centroid, axis=1)
+            fall_dists = np.linalg.norm(b_fall[full_feats].values - centroid, axis=1)
+            
+            mean_alap_dist = float(np.mean(alap_dists))
+            std_alap_dist = float(np.std(alap_dists))
+            mean_fall_dist = float(np.mean(fall_dists))
+            z_score = float((mean_fall_dist - mean_alap_dist) / (std_alap_dist + 1e-9))
+            is_outlier = abs(z_score) > 3.0
+            
+            fallback_rounds = sorted([int(r) for r in b_fall["round_id"].unique()])
+            total_b_rounds = int(len(b_df["round_id"].unique()))
+            
+            fallback_check[fb_backend] = {
+                "fallback_rounds": fallback_rounds,
+                "total_rounds": total_b_rounds,
+                "num_fallback_samples": int(len(b_fall)),
+                "num_alap_samples": int(len(b_alap)),
+                "mean_distance_to_alap_centroid": mean_fall_dist,
+                "alap_mean_distance": mean_alap_dist,
+                "alap_std_distance": std_alap_dist,
+                "z_score": z_score,
+                "is_outlier": is_outlier,
+                "summary": (
+                    f"{len(fallback_rounds)}/{total_b_rounds} collection rounds used fallback transpilation "
+                    f"({fb_backend} Round {fallback_rounds}); distance z-score={z_score:.2f} relative to ALAP centroid; "
+                    f"{'no detectable outlier effect' if not is_outlier else 'flagged as outlier'}."
+                )
+            }
+    else:
+        fallback_check = {"note": "All samples across all backends used ALAP scheduling."}
+        
+    with open(metrics_dir / "fallback_confound_check.json", "w", encoding="utf-8") as f:
+        json.dump(fallback_check, f, indent=2)
+    all_results["fallback_transpile_confound_check"] = fallback_check
+
     # Aggregate into results.json (Single Source of Truth)
     res_path = results_dir / "results.json"
     with open(res_path, "w", encoding="utf-8") as f:

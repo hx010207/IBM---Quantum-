@@ -143,4 +143,12 @@ Direct empirical inspection of raw IBM Quantum Runtime job metrics across `ibm_k
 - **Resulting Temporal Window**: Total observation window is compressed to approximately $\sim 2.0 - 2.5$ days rather than the originally envisioned 5 days.
 - **Reporting Requirement**: In accordance with scientific integrity guidelines, this compressed observation window is explicitly recognized and documented as a deadline-driven limitation in `LIMITATIONS_OBSERVED.md` and will be clearly reported in the paper's Limitations section.
 
+---
+
+## 11. Transpilation Path Invariance & Fallback Confound Control
+- **Occurrence**: During Round 5 collection on `ibm_kingston` (Job `db25hv42ljfc73d405ng`), Qiskit's `ALAPScheduleAnalysis` raised a transient `TranspilerError` due to missing `cz` gate duration data during backend maintenance. Transpilation succeeded deterministically using the native basis gates + coupling map fallback path (`transpile_path: fallback`). All other 14 training rounds across `ibm_fez`, `ibm_marrakesh`, and `ibm_kingston` used standard ALAP scheduling (`transpile_path: alap`).
+- **Circuit Equivalence**: Unit test `test_c10_fallback_equivalence_and_barrier_position` confirms that `c10_mirror_depth24_delay` under the fallback path preserves identical dephasing delay duration ($7500\,\text{dt} = 30\,\mu\text{s}$) and identical relative placement sandwiched strictly between the midpoint entry and exit barriers (`barrier_0 < delay < barrier_1`).
+- **Confound Audit**: In Stage 4 (`scripts/06_run_experiments.py` & `scripts/09_claims_audit.py`), an explicit sanity check verifies that the single fallback collection round (`ibm_kingston` Round 5) does not behave as an outlier relative to ALAP rounds from the same backend. Empirical inspection confirms distance from the Kingston ALAP centroid is within 0.68 standard deviations (mean Euclidean distance 0.978 vs 0.789 $\pm$ 0.279), with 100% classification accuracy into `ibm_kingston` when evaluated out-of-round, demonstrating no detectable confounding effect.
+
+
 

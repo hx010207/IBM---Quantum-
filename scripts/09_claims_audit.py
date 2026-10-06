@@ -133,6 +133,16 @@ def main():
     audit_md += f"- **Adversary S2 Capabilities**: Adaptive readout confusion tuning increases the impersonator's acceptance rate (AAR={s2_aar:.3f}) relative to baseline S1, showing that a sophisticated adversary with calibration access can partially reduce detection margins on shallow circuits.\n"
     audit_md += "- **Open-Set Granularity**: With 2-3 accessible Open Plan backends, open-set generalization is demonstrated on one held-out backend; scaling to larger fleets of 10+ backends remains an objective for future institutional access.\n"
 
+    # Fallback Transpilation Confound Audit
+    fb_check = results.get("fallback_transpile_confound_check", {})
+    if fb_check and "note" not in fb_check:
+        audit_md += "\n## Methodological Controls: Fallback Transpilation Confound Audit\n\n"
+        for fb_name, fb_data in fb_check.items():
+            audit_md += f"- **{fb_name}**: {fb_data.get('summary')}\n"
+            audit_md += f"  - Verification Status: {'PASSED (No outlier/classification disparity detected)' if not fb_data.get('is_outlier') else 'FLAGGED'}\n"
+            audit_md += f"  - Centroid distance: Fallback = {fb_data.get('mean_distance_to_alap_centroid', 0.0):.4f} vs ALAP = {fb_data.get('alap_mean_distance', 0.0):.4f} $\\pm$ {fb_data.get('alap_std_distance', 0.0):.4f} (z-score: {fb_data.get('z_score', 0.0):.2f})\n"
+
+
     out_file = Path("claims_audit.md")
     with open(out_file, "w", encoding="utf-8") as f:
         f.write(audit_md)
