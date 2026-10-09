@@ -198,7 +198,7 @@ def print_status_report(config: dict, min_gap_hours: float):
     print(f"Operational Fleet        : {', '.join(real_backends)}")
     print(f"Cumulative QPU Consumed  : {cum_qpu:.2f} s / 510.0 s ({cum_qpu / 510.0 * 100:.1f} % of Safety Cap)")
     print(f"Remaining Safe QPU Budget: {510.0 - cum_qpu:.2f} s")
-    print(f"Hard Floor Protocol      : >= {min_gap_hours:.1f} hours per backend (Decoupled Submission)")
+    print(f"Hard Floor Protocol      : >= 4.0h (R1-7) / >= 2.0h (R8-12) per backend (Decoupled Submission)")
     print(f"Hard Cutoff              : Oct 10, 12:00 local ({CUTOFF_UTC.strftime('%Y-%m-%d %H:%M UTC')})")
     print("-" * 80)
     print(f"{'Round':<8} | " + " | ".join(f"{b:<20}" for b in real_backends))

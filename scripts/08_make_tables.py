@@ -30,7 +30,7 @@ def parse_args():
     return parser.parse_args()
 
 
-def save_table(df: pd.DataFrame, table_name: str, tables_dir: Path):
+def save_table(df: pd.DataFrame, table_name: str, tables_dir: Path, note: str = None):
     """Saves DataFrame as CSV and LaTeX tabular."""
     tables_dir.mkdir(parents=True, exist_ok=True)
     csv_path = tables_dir / f"{table_name}.csv"
@@ -38,6 +38,8 @@ def save_table(df: pd.DataFrame, table_name: str, tables_dir: Path):
     
     df.to_csv(csv_path, index=False)
     latex_code = df.to_latex(index=False, escape=False)
+    if note:
+        latex_code += f"\n\\noindent\\footnotesize Note: {note}\n"
     with open(tex_path, "w", encoding="utf-8") as f:
         f.write(latex_code)
     logger.info(f"Saved {table_name} to CSV and LaTeX in {tables_dir}")
@@ -113,7 +115,12 @@ def main():
             "Bootstrap 95\\% CI": f"[{ci['ci_lower']:.3f}, {ci['ci_upper']:.3f}]",
         })
     df_t3 = pd.DataFrame(t3_rows)
-    save_table(df_t3, "table3_e1_models_metrics", tables_dir)
+    save_table(
+        df_t3,
+        "table3_e1_models_metrics",
+        tables_dir,
+        note="Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent.",
+    )
 
     # -------------------------------------------------------------------------
     # Table T4: E4 Spoofing Detection Metrics

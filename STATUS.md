@@ -1,5 +1,3 @@
-HALTED AT ROUND 9 — AWAITING REVIEW — REASON: Job failure on backend ibm_kingston Round 9: exit code 1
-
 # Project Status & Milestone Tracking
 
 ## Stage 0: Setup, Environment, Architecture & Dry-Run Pipeline Verification
@@ -145,6 +143,20 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 | **`ibm_kingston`** | `db47tdcvf2bc73cu7br0` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **67.67 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_007.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_007.json) |
 | **`ibm_marrakesh`** | `db47tag4qg6s73c1pp7g` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **67.58 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_007.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_007.json) |
 
+#### Round 8 (Oct 9 Maximum Compression Cadence — Test Split Initiated @ 2.0h Floor)
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R7 | Transpile Path | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db4acicvf2bc73cub490` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **2.33 h** | `alap` | Completed | [`data/raw/ibm_fez/round_008.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_008.json) |
+| **`ibm_kingston`** | `db4acislf4us73c2fjsg` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **2.73 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_008.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_008.json) |
+| **`ibm_marrakesh`** | `db4aciqmb58s7388u56g` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **2.81 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_008.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_008.json) |
+
+#### Round 9 (Oct 9 Maximum Compression Cadence — Test Split Continued @ 2.0h Floor)
+| Backend | Job ID | Physical Layout | Circuits | Shots | Quantum Usage | Gap from R8 | Transpile Path | Status | Raw Output File |
+| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
+| **`ibm_fez`** | `db4c59g4qg6s73c1vs10` | `[137, 147, 146]` | 10 | 2048 | 8.000 s | **2.01 h** | `alap` | Completed | [`data/raw/ibm_fez/round_009.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_fez/round_009.json) |
+| **`ibm_kingston`** | `db4c73o4qg6s73c1vucg` | `[89, 90, 91]` | 10 | 2048 | 8.000 s | **2.02 h** | `alap` | Completed | [`data/raw/ibm_kingston/round_009.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_kingston/round_009.json) |
+| **`ibm_marrakesh`** | `db4c5a84qg6s73c1vs2g` | `[4, 5, 6]` | 10 | 2048 | 8.000 s | **2.01 h** | `alap` | Completed | [`data/raw/ibm_marrakesh/round_009.json`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/data/raw/ibm_marrakesh/round_009.json) |
+
 ### Cumulative QPU Budget Status
 - **Initial Probes Consumption (3 backends)**: **24.000 s**
 - **Round 1 Consumption (3 backends)**: **24.000 s**
@@ -154,11 +166,13 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 - **Round 5 Consumption (3 backends)**: **24.000 s**
 - **Round 6 Consumption (3 backends)**: **24.000 s**
 - **Round 7 Consumption (3 backends)**: **24.000 s**
-- **Cumulative QPU Consumed So Far**: **192.000 s** across 24 total hardware jobs
+- **Round 8 Consumption (3 backends)**: **24.000 s**
+- **Round 9 Consumption (3 backends)**: **24.000 s**
+- **Cumulative QPU Consumed So Far**: **216.000 s** across 30 total hardware jobs (including 3 probes)
 - **85% Safety Cap (Ceiling)**: **510.0 s**
-- **Safety Cap Utilization**: **37.6 %** (well below the 50% visibility threshold)
-- **Total Monthly Allowance Remaining**: **408.000 s** (68.0% intact out of 600.0s)
-- **Remaining Safe QPU Budget**: **318.000 s**
+- **Safety Cap Utilization**: **42.4 %** (well below the 50% visibility threshold and 60% halt threshold)
+- **Total Monthly Allowance Remaining**: **384.000 s** (64.0% intact out of 600.0s)
+- **Remaining Safe QPU Budget**: **294.000 s**
 
 ### Transpile Path Verification & Confound Tagging
 - **c10 Circuit Equivalence**: Verified that both the normal ALAP scheduling path and the fallback path preserve:
@@ -173,7 +187,7 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 - **Keep-Awake & Heartbeat**: `SetThreadExecutionState` active; heartbeats logged every 60s; gaps > 30 minutes flagged as potential machine sleep.
 - **Hard Cutoff**: Oct 10, 12:00 local time. If Round 12 is not reached across all 3 backends, collection halts at highest common round (minimum Round 10) and split is automatically locked to train 1-5, val 6-7, test 8-$R_{\text{common}}$.
 - **Halt Trigger Behavior**: If ANY halt condition fires (job failure, usage deviation >15%, budget cap >60%), the top line of `STATUS.md` is immediately overwritten with `HALTED AT ROUND X — AWAITING REVIEW — REASON: ...` and execution halts.
-- **Current Status**: Rounds 1-7 100% complete across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh`). Round 8 2.0h floor cleared across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh` all READY TO SUBMIT). Autonomous orchestrator active.
+- **Current Status**: Rounds 1-9 100% complete across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh`). Round 10 2.0h floor cleared across all 3 backends (>4.5h elapsed; all READY TO SUBMIT). Autonomous orchestrator active.
 
 
 

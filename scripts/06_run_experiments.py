@@ -364,16 +364,28 @@ def main():
         det_openset.fit(gen_tr_seen[full_feats].values)
         thresh_o = det_openset.calibrate_threshold(gen_val_seen[full_feats].values, target_fpr=0.05)
         
-        # Test on unseen backend
-        unseen_te = real_df[(real_df["backend"] == unseen_backend) & (real_df["round_id"].isin(test_rounds))]
-        unseen_scores = det_openset.compute_anomaly_scores(unseen_te[full_feats].values)
-        rejection_rate = float(np.mean(unseen_scores > thresh_o))
-        
+        # Calculate actual elapsed hours from training to test rounds
+        t_tr_last = get_round_timestamp(seen_backends[0], max(train_rounds))
+        t_te_first = get_round_timestamp(unseen_backend, min(test_rounds))
+        t_te_last = get_round_timestamp(unseen_backend, max(test_rounds))
+        elapsed_h_tr_to_te = float((t_te_first - t_tr_last).total_seconds() / 3600.0) if (t_tr_last and t_te_first) else None
+        elapsed_h_total_span = float((t_te_last - t_tr_last).total_seconds() / 3600.0) if (t_tr_last and t_te_last) else None
+
+        # Bootstrap CI over test rounds for open-set rejection rate
+        def eval_rej(d):
+            s = det_openset.compute_anomaly_scores(d[full_feats].values)
+            return float(np.mean(s > thresh_o))
+
+        boot_rej_ci = compute_round_bootstrap_ci(unseen_te, eval_rej, rounds=test_rounds, n_bootstraps=200, seed=42)
+
         e5_results = {
             "trained_on": seen_backends[0],
             "unseen_backend": unseen_backend,
             "calibrated_threshold": thresh_o,
             "rejection_rate": rejection_rate,
+            "bootstrap_ci_95": boot_rej_ci,
+            "elapsed_hours_train_to_test_start": round(elapsed_h_tr_to_te, 2) if elapsed_h_tr_to_te is not None else None,
+            "elapsed_hours_train_to_test_span": round(elapsed_h_total_span, 2) if elapsed_h_total_span is not None else None,
             "open_set_flagged": rejection_rate >= 0.90,
             "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence; evaluation samples across test rounds are not fully independent.",
         }

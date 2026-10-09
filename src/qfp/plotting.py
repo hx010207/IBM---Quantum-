@@ -326,14 +326,15 @@ def plot_fig5_confusion_matrix(
 
 
 def plot_fig6_cross_day_persistence(
-    time_gaps: List[int],
+    time_gaps: List[float],
     accuracies: List[float],
     ci_lowers: List[float],
     ci_uppers: List[float],
     output_dir: Path,
     is_dryrun: bool = False,
+    round_gaps: Optional[List[int]] = None,
 ):
-    """Fig 6: Accuracy vs round-gap interval with 95% bootstrap confidence bands."""
+    """Fig 6: Accuracy vs elapsed wall-clock hours with 95% bootstrap confidence bands."""
     set_ieee_style()
     fig, ax = plt.subplots(figsize=(3.5, 2.8))
     
@@ -345,7 +346,7 @@ def plot_fig6_cross_day_persistence(
     ax.plot(x, y, "o-", color=COLOR_PALETTE["blue"], label="Chronological Test Accuracy")
     ax.fill_between(x, y_low, y_up, color=COLOR_PALETTE["blue"], alpha=0.2, label="95% Bootstrap CI")
     
-    ax.set_xlabel("Round Separation Gap (ΔRounds)")
+    ax.set_xlabel("Elapsed Wall-Clock Separation (Hours)")
     ax.set_ylabel("Identification Accuracy")
     ax.set_ylim(0.0, 1.05)
     ax.legend(frameon=True, loc="lower left", fontsize=7.5)
@@ -354,7 +355,10 @@ def plot_fig6_cross_day_persistence(
     if is_dryrun:
         apply_synthetic_watermark(ax)
         
-    source_df = pd.DataFrame({"round_gap": x, "accuracy": y, "ci_lower": y_low, "ci_upper": y_up})
+    source_dict = {"elapsed_hours": x, "accuracy": y, "ci_lower": y_low, "ci_upper": y_up}
+    if round_gaps is not None:
+        source_dict["round_gap"] = round_gaps
+    source_df = pd.DataFrame(source_dict)
     save_figure_and_source(fig, source_df, "fig6_cross_day_persistence", output_dir, is_dryrun)
 
 

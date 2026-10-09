@@ -128,8 +128,8 @@ def main():
     for c in claims:
         audit_md += f"| **{c['id']}** | {c['claim']} | **{c['status']}** | {c['evidence']} | {c['reference']} | {c['note']} |\n"
 
-    audit_md += "\n## Plain-Text Assessment of Weak or Negative Findings\n\n"
     audit_md += "- **Temporal Window Scope**: Because data was collected over several days rather than months, these findings demonstrate cross-round persistence over the observed operational window. Long-term drift beyond several days cannot be asserted without extended collection.\n"
+    audit_md += "- **Compressed Test-Round Cadence & Correlation**: To meet the deadline cutoff, test rounds 8 onward were collected under a minimum 2.0-hour per-backend floor (spaced ~2-3 hours apart). Consequently, test rounds exhibit higher temporal correlation than earlier rounds; confidence intervals are resampled over rounds, and exact elapsed wall-clock hours from hardware timestamps are reported.\n"
     audit_md += f"- **Adversary S2 Capabilities**: Adaptive readout confusion tuning increases the impersonator's acceptance rate (AAR={s2_aar:.3f}) relative to baseline S1, showing that a sophisticated adversary with calibration access can partially reduce detection margins on shallow circuits.\n"
     audit_md += "- **Open-Set Granularity**: With 2-3 accessible Open Plan backends, open-set generalization is demonstrated on one held-out backend; scaling to larger fleets of 10+ backends remains an objective for future institutional access.\n"
 

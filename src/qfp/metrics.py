@@ -217,4 +217,8 @@ def compute_round_bootstrap_ci(
         "ci_lower": ci_lower,
         "ci_upper": ci_upper,
         "ci_half_width": half_width,
+        "round_independence_note": (
+            "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart "
+            "under compressed cadence are not fully independent."
+        ),
     }

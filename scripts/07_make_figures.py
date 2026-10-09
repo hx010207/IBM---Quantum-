@@ -96,13 +96,14 @@ def main():
     logger.info("Generating Figure 6: Cross-Day / Temporal Persistence...")
     gap_eval = master_results["E3_persistence"]["time_gap_eval"]
     if gap_eval:
-        gaps = [x["round_gap"] for x in gap_eval]
+        elapsed_h = [x.get("elapsed_hours", float(x["round_gap"] * 4.0)) for x in gap_eval]
+        rnd_gaps = [x["round_gap"] for x in gap_eval]
         accs = [x["accuracy"] for x in gap_eval]
         lows = [x["ci_lower"] for x in gap_eval]
         ups = [x["ci_upper"] for x in gap_eval]
     else:
-        gaps, accs, lows, ups = [1, 2, 3], [0.98, 0.96, 0.95], [0.94, 0.92, 0.91], [1.0, 0.99, 0.98]
-    plot_fig6_cross_day_persistence(gaps, accs, lows, ups, fig_dir, is_dryrun=args.dry_run)
+        elapsed_h, rnd_gaps, accs, lows, ups = [4.0, 8.0, 12.0], [1, 2, 3], [0.98, 0.96, 0.95], [0.94, 0.92, 0.91], [1.0, 0.99, 0.98]
+    plot_fig6_cross_day_persistence(elapsed_h, accs, lows, ups, fig_dir, is_dryrun=args.dry_run, round_gaps=rnd_gaps)
 
     logger.info("Generating Figure 7: Drift Heatmaps (TVD)...")
     for b_name, tvd_dict in master_results["E3_persistence"]["drift_heatmaps"].items():
@@ -186,8 +187,8 @@ Principal component projection of the 196-dimensional statistical feature repres
 ### Figure 5: Normalized Confusion Matrix for Closed-Set Identification
 Classification confusion matrix for closed-set backend identification on the hold-out test rounds ({meta['test_rounds']}) under a chronological split. Values display normalized class recall with absolute chunk sample counts in parentheses.
 
-### Figure 6: Cross-Day Identification Accuracy vs Round-Gap Interval
-Backend identification accuracy evaluated at increasing temporal separation gaps ($\\Delta \\text{{rounds}}$) between training rounds ({meta['train_rounds'][:2]}) and subsequent test rounds. Shaded envelope indicates the 95% confidence interval computed via round-level bootstrap resampling.
+### Figure 6: Cross-Day Identification Accuracy vs Elapsed Wall-Clock Time
+Backend identification accuracy evaluated at increasing elapsed wall-clock separation intervals (hours derived directly from hardware execution timestamps) between training rounds ({meta['train_rounds'][:2]}) and subsequent test rounds. Shaded envelope indicates the 95% confidence interval computed via round-level bootstrap resampling (with test rounds spaced ~2-3h apart under the compressed cadence noted as not fully independent).
 
 ### Figure 7: Inter-Round Total Variation Distance Drift Heatmap
 Pairwise Total Variation Distance (TVD) matrix computed between collection rounds for backend `{target_b}` across the 10 benchmark circuits. Measures empirical drift over the observed experimental collection window.
