@@ -118,8 +118,9 @@ def main():
     if args.backend:
         real_backends_cfg = [b for b in real_backends_cfg if b["name"] == args.backend]
 
-    round_results = []
-    for b_entry in real_backends_cfg:
+    from concurrent.futures import ThreadPoolExecutor, as_completed
+
+    def collect_single_backend(b_entry):
         b_name = b_entry["name"]
         layout = b_entry["layout"]
 
@@ -145,7 +146,10 @@ def main():
                         )
                         print(f"\n[TIME GAP GUARD TRIGGERED]: Only {elapsed_hours:.2f}h elapsed since Round {round_id - 1} on '{b_name}' (minimum required: {min_gap_hours:.2f}h).")
                         print(f"Next allowed submission on '{b_name}' is after {(min_gap_hours - elapsed_hours):.2f}h.\n")
-                        sys.exit(3)
+                        raise RuntimeError(f"Time gap guard triggered for {b_name}: {elapsed_hours:.2f}h < {min_gap_hours:.2f}h")
+
+        raw_file_dest = (Path("dryrun/data/raw") if args.dry_run else Path("data/raw")) / b_name / f"round_{round_id:03d}.json"
+        already_existed = raw_file_dest.exists()
 
         logger.info(f"Connecting to IBM backend '{b_name}' (layout: {layout}) for Round {round_id}...")
         backend_obj = service.backend(b_name)
@@ -157,23 +161,32 @@ def main():
             shots=shots,
             num_chunks=num_chunks,
             is_dryrun=False,
-            budget_guard=budget_guard,
+            budget_guard=None,  # Recorded safely in main thread after completion
             seed=42,
         )
         logger.info(f"Finished hardware Round {round_id} on '{b_name}': {raw_path}")
+        return b_name, layout, raw_path, elapsed_hours, already_existed
 
-        # Read saved record to extract exact job details
-        import json
-        with open(raw_path, "r", encoding="utf-8") as f:
-            rec = json.load(f)
-        round_results.append({
-            "backend": b_name,
-            "job_id": rec.get("job_id"),
-            "layout": layout,
-            "quantum_seconds": rec.get("execution_time_seconds", 0.0),
-            "file": str(raw_path),
-            "wall_clock_gap_hours": elapsed_hours,
-        })
+    round_results = []
+    with ThreadPoolExecutor(max_workers=len(real_backends_cfg)) as executor:
+        futures = {executor.submit(collect_single_backend, b): b["name"] for b in real_backends_cfg}
+        for future in as_completed(futures):
+            b_name, layout, raw_path, elapsed_hours, already_existed = future.result()
+            import json
+            with open(raw_path, "r", encoding="utf-8") as f:
+                rec = json.load(f)
+            q_sec = rec.get("execution_time_seconds", 8.0)
+            if budget_guard and not already_existed:
+                budget_guard.record_job_consumption(q_sec, job_id=rec.get("job_id"), is_dryrun=False)
+            round_results.append({
+                "backend": b_name,
+                "job_id": rec.get("job_id"),
+                "layout": layout,
+                "quantum_seconds": q_sec,
+                "file": str(raw_path),
+                "wall_clock_gap_hours": elapsed_hours,
+            })
+    round_results.sort(key=lambda x: x["backend"])
 
     print("\n" + "=" * 95)
     print(f"STAGE 2: HARDWARE DATA COLLECTION — ROUND {round_id} SUMMARY")
