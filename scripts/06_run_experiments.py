@@ -15,6 +15,7 @@ everything into results/results.json.
 """
 
 import argparse
+from datetime import datetime
 import json
 import logging
 from pathlib import Path
@@ -123,6 +124,10 @@ def main():
             return accuracy_score(d["backend"].values, p)
             
         boot_ci = compute_round_bootstrap_ci(df_test_c, eval_acc, rounds=test_rounds, n_bootstraps=200, seed=42)
+        boot_ci["round_independence_note"] = (
+            "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart "
+            "under compressed cadence are not fully independent."
+        )
         
         e1_results["models"][model_name] = {
             "test_accuracy": acc,
@@ -201,11 +206,27 @@ def main():
     logger.info("Executing E3: Cross-day persistence and round-to-round drift...")
     e3_results = {"time_gap_eval": [], "drift_heatmaps": {}}
     
-    # Train on earliest rounds (1, 2) and evaluate on rounds 3, 4, 5, 6, 7, 8
+    # Train on earliest rounds (1, 2) and evaluate on subsequent rounds
     df_e3_tr = real_df[real_df["round_id"].isin([1, 2])]
     pipe_e3 = create_classifier_pipeline("random_forest", seed=42)
     pipe_e3.fit(df_e3_tr[full_feats].values, df_e3_tr["backend"].values)
     
+    def get_round_timestamp(b_name: str, r_id: int):
+        r_file = Path("data/raw") / b_name / f"round_{r_id:03d}.json"
+        if not r_file.exists():
+            r_file = Path("dryrun/data/raw") / b_name / f"round_{r_id:03d}.json"
+        if r_file.exists():
+            with open(r_file, "r", encoding="utf-8") as f:
+                d = json.load(f)
+                t_str = d.get("end_timestamp") or d.get("start_timestamp")
+                if t_str:
+                    return datetime.fromisoformat(t_str.replace("Z", "+00:00"))
+        return None
+
+    ref_times = [get_round_timestamp(b, 2) for b in real_backends]
+    ref_times = [t for t in ref_times if t is not None]
+    t_ref = max(ref_times) if ref_times else None
+
     max_round = max(real_df["round_id"].unique())
     for r in range(3, max_round + 1):
         df_r = real_df[real_df["round_id"] == r]
@@ -213,12 +234,30 @@ def main():
             continue
         p_r = pipe_e3.predict(df_r[full_feats].values)
         acc_r = float(accuracy_score(df_r["backend"].values, p_r))
+
+        # Calculate actual elapsed hours from round timestamps
+        r_times = [get_round_timestamp(b, r) for b in real_backends]
+        r_times = [t for t in r_times if t is not None]
+        if t_ref and r_times:
+            elapsed_hours = float((max(r_times) - t_ref).total_seconds() / 3600.0)
+        else:
+            elapsed_hours = float((r - 2) * 4.0)
+
+        # Bootstrap CI over sample chunks of round r
+        def eval_r_acc(d):
+            p = pipe_e3.predict(d[full_feats].values)
+            return accuracy_score(d["backend"].values, p)
+
+        boot_r_ci = compute_round_bootstrap_ci(df_r, eval_r_acc, rounds=[r], n_bootstraps=100, seed=42)
+
         e3_results["time_gap_eval"].append({
             "target_round": int(r),
             "round_gap": int(r - 2),
+            "elapsed_hours": round(elapsed_hours, 2),
             "accuracy": acc_r,
-            "ci_lower": max(0.0, acc_r - 0.05),
-            "ci_upper": min(1.0, acc_r + 0.05),
+            "ci_lower": boot_r_ci.get("ci_lower", max(0.0, acc_r - 0.05)),
+            "ci_upper": boot_r_ci.get("ci_upper", min(1.0, acc_r + 0.05)),
+            "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent.",
         })
 
     for b in real_backends:
@@ -336,6 +375,7 @@ def main():
             "calibrated_threshold": thresh_o,
             "rejection_rate": rejection_rate,
             "open_set_flagged": rejection_rate >= 0.90,
+            "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence; evaluation samples across test rounds are not fully independent.",
         }
     else:
         e5_results = {"note": "Fewer than 3 real backends available for open-set split."}

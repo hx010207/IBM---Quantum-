@@ -30,3 +30,11 @@ This document records the empirical boundaries, hardware limitations, and factua
 ## 4. Adversarial Simulator Modeling
 - **Noise Model Limits**: S1 and S2 simulators are derived from backend calibration snapshots (T1, T2, readout error, 2Q gate errors). They capture local incoherent Markovian noise but omit non-Markovian memory effects, dynamic two-level system (TLS) fluctuator hopping, and pulse-level cross-resonance phase distortions.
 - **Adaptive Readout Modeling (S2)**: The empirical readout confusion matrix fitted on training calibration circuits partially elevates adversary acceptance, but is constrained to stationary measurement probabilities.
+
+---
+
+## 5. Test-Round Temporal Correlation under Compressed Cadence (Rounds 8–12)
+- **Reduced Separation Floor**: To accommodate the hard deadline cutoff of Oct 10, 12:00 local time, the per-backend minimum gap for rounds 8 onward was reduced to 2.0 hours (rounds 1–7 remain strictly at $\ge 4.0\,\text{h}$, with a $67.6\,\text{h}$ separation between Round 6 and Round 7).
+- **Correlation Caveat**: Spacing test rounds $\sim 2 - 3\,\text{hours}$ apart implies test samples capture shorter-timescale noise fluctuations and may exhibit higher temporal correlation than earlier rounds.
+- **Analytical Safeguards**: In E3 (persistence), E5 (open-set), and all bootstrap calculations, exact elapsed hours from raw hardware timestamps are used for drift evaluation, and confidence intervals are computed via round-level resampling with an explicit note that test rounds are not fully independent.
+

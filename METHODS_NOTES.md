@@ -150,5 +150,16 @@ Direct empirical inspection of raw IBM Quantum Runtime job metrics across `ibm_k
 - **Circuit Equivalence**: Unit test `test_c10_fallback_equivalence_and_barrier_position` confirms that `c10_mirror_depth24_delay` under the fallback path preserves identical dephasing delay duration ($7500\,\text{dt} = 30\,\mu\text{s}$) and identical relative placement sandwiched strictly between the midpoint entry and exit barriers (`barrier_0 < delay < barrier_1`).
 - **Confound Audit**: In Stage 4 (`scripts/06_run_experiments.py` & `scripts/09_claims_audit.py`), an explicit sanity check verifies that the single fallback collection round (`ibm_kingston` Round 5) does not behave as an outlier relative to ALAP rounds from the same backend. Empirical inspection confirms distance from the Kingston ALAP centroid is within 0.68 standard deviations (mean Euclidean distance 0.978 vs 0.789 $\pm$ 0.279), with 100% classification accuracy into `ibm_kingston` when evaluated out-of-round, demonstrating no detectable confounding effect.
 
+---
+
+## 12. Cadence Compression for Rounds 8 Onward (2.0-Hour Floor) & Correlation Accounting
+- **Protocol Adjustment**: For rounds 8 onward only, the per-backend minimum separation gap was reduced from 4.0h to 2.0h (`min_gap_hours = 2.0`). Rounds 1–7 remain completely unchanged (spanning Oct 4 through Oct 9, with multi-day train-to-test separation firmly established: e.g. R1–R5 collected Oct 4–6, R6 collected Oct 6, R7 collected Oct 9, establishing $>67$ hours of real-world physical drift separation between training and test sets).
+- **Reason for Change**: Hard submission deadline constraint (MARC 2027) requiring all data collection to conclude by Oct 10 12:00 local time to allow complete experimental synthesis and paper finalization. Because train-to-test separation is already several days, reducing the floor for test rounds does not compromise the core chronological separation claim.
+- **Statistical Consequence**: Because test rounds 8–12 are spaced approximately 2–3 hours apart, consecutive test rounds exhibit higher temporal correlation than earlier rounds.
+- **Methodological Controls**:
+  - In E3 (cross-day persistence), E5 (open-set), and all longitudinal evaluations, analyses compute and report the **exact elapsed wall-clock hours** derived directly from raw execution timestamps rather than assuming uniform round spacing.
+  - Confidence intervals are computed via round-level bootstrap resampling, accompanied by explicit notes and documentation that test rounds are not fully independent due to the compressed 2.0h cadence.
+
+
 
 

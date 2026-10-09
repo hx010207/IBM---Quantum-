@@ -48,6 +48,8 @@ def main():
     num_chunks = args.chunks or int(sampling_cfg.get("chunks_per_round", 8))
     round_id = args.round_id
     min_gap_hours = args.min_gap_hours
+    if args.min_gap_hours == 4.0 and round_id >= 8:
+        min_gap_hours = 2.0  # Rounds 8 onward use 2.0h floor per deadline cadence
 
     budget_guard = None
     if not args.dry_run:

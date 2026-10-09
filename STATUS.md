@@ -167,11 +167,11 @@ Per the author's conditional approval, budget probes (full 10-circuit rounds at 
 
 ### Execution Mode: Autonomous Decoupled Maximum Compression Cadence
 - **Protocol**: Autonomous decoupled per-backend execution through Round 12 $\to$ Stage 3 (Simulations S0/S1/S2) $\to$ Stage 4 (Features, Experiments E1-E7, Claims Audit) $\to$ Stage 5 (Publication Figures 1-12, Tables T1-T5, CAPTIONS.md, Handoff package).
-- **Hard-Floor Guard**: Strictly $\ge 4.0\,\text{hours}$ per backend maintained between rounds. Backends submit independently without waiting for each other.
+- **Hard-Floor Guard**: Strictly $\ge 4.0\,\text{hours}$ per backend for rounds 1–7; reduced to $\ge 2.0\,\text{hours}$ per backend for rounds 8 onward (deadline-driven; multi-day train-to-test separation already firmly established). Backends submit independently without waiting for each other.
 - **Keep-Awake & Heartbeat**: `SetThreadExecutionState` active; heartbeats logged every 60s; gaps > 30 minutes flagged as potential machine sleep.
 - **Hard Cutoff**: Oct 10, 12:00 local time. If Round 12 is not reached across all 3 backends, collection halts at highest common round (minimum Round 10) and split is automatically locked to train 1-5, val 6-7, test 8-$R_{\text{common}}$.
 - **Halt Trigger Behavior**: If ANY halt condition fires (job failure, usage deviation >15%, budget cap >60%), the top line of `STATUS.md` is immediately overwritten with `HALTED AT ROUND X — AWAITING REVIEW — REASON: ...` and execution halts.
-- **Current Status**: Rounds 1-7 100% complete across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh`). Round 8 locked until individual 4.0h floors clear (`ibm_marrakesh` at 09:42 UTC, `ibm_kingston` at 09:47 UTC, `ibm_fez` at 10:11 UTC). Autonomous orchestrator active.
+- **Current Status**: Rounds 1-7 100% complete across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh`). Round 8 2.0h floor cleared across all 3 backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh` all READY TO SUBMIT). Autonomous orchestrator active.
 
 
 

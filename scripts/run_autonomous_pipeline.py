@@ -111,10 +111,17 @@ def get_round_end_time(backend_name: str, round_id: int) -> datetime:
     return None
 
 
-def get_seconds_until_allowed(backend_name: str, round_id: int, min_gap_hours: float) -> float:
+def get_min_gap_hours_for_round(round_id: int) -> float:
+    """Returns minimum wall-clock gap in hours: 2.0h for rounds >= 8, 4.0h for rounds 1-7."""
+    return 2.0 if round_id >= 8 else 4.0
+
+
+def get_seconds_until_allowed(backend_name: str, round_id: int, min_gap_hours: float = None) -> float:
     """Returns number of seconds to wait before round_id can be submitted on backend_name."""
     if round_id <= 1:
         return 0.0
+    if min_gap_hours is None:
+        min_gap_hours = get_min_gap_hours_for_round(round_id)
     prev_end = get_round_end_time(backend_name, round_id - 1)
     if prev_end is None:
         return 0.0
@@ -206,7 +213,8 @@ def print_status_report(config: dict, min_gap_hours: float):
                 t_str = end_t.strftime("%m-%d %H:%M UTC") if end_t else "DONE"
                 row_cols.append(f"DONE ({t_str})")
             else:
-                wait_sec = get_seconds_until_allowed(b, r, min_gap_hours)
+                r_gap = get_min_gap_hours_for_round(r)
+                wait_sec = get_seconds_until_allowed(b, r, r_gap)
                 if r > 1 and not check_round_completed(b, r - 1):
                     row_cols.append("WAITING (Prev Rnd)")
                 elif wait_sec > 0:
@@ -224,7 +232,7 @@ worker_lock = threading.Lock()
 
 
 def run_single_backend_worker(backend_name: str, round_id: int, min_gap_hours: float):
-    logger.info(f"[{backend_name}] Worker starting collection for Round {round_id}...")
+    logger.info(f"[{backend_name}] Worker starting collection for Round {round_id} (min_gap: {min_gap_hours:.1f}h)...")
     cmd = [
         sys.executable,
         "scripts/03_collect_round.py",
@@ -354,11 +362,12 @@ def run_collection_loop(config: dict, min_gap_hours: float, start_round: int, en
             if next_r > 1 and not check_round_completed(b, next_r - 1):
                 continue
 
-            # Check 4.0h hard floor for backend b
-            wait_sec = get_seconds_until_allowed(b, next_r, min_gap_hours)
+            # Check hard floor for backend b (2.0h for rounds >= 8)
+            gap_h = get_min_gap_hours_for_round(next_r)
+            wait_sec = get_seconds_until_allowed(b, next_r, gap_h)
             if wait_sec <= 0.0:
-                logger.info(f"[{b}] Hard floor cleared! Launching independent collection for Round {next_r}...")
-                t = threading.Thread(target=run_single_backend_worker, args=(b, next_r, min_gap_hours))
+                logger.info(f"[{b}] {gap_h:.1f}h floor cleared! Launching independent collection for Round {next_r}...")
+                t = threading.Thread(target=run_single_backend_worker, args=(b, next_r, gap_h))
                 t.daemon = True
                 t.start()
                 active_threads[b] = t
@@ -379,9 +388,10 @@ def run_collection_loop(config: dict, min_gap_hours: float, start_round: int, en
                 if next_r is None:
                     status_items.append(f"{b}: DONE (R12)")
                 else:
-                    wait_sec = get_seconds_until_allowed(b, next_r, min_gap_hours)
+                    gap_h = get_min_gap_hours_for_round(next_r)
+                    wait_sec = get_seconds_until_allowed(b, next_r, gap_h)
                     wait_h = wait_sec / 3600.0
-                    status_items.append(f"{b}: R{next_r} locked ({wait_h:.2f}h left)")
+                    status_items.append(f"{b}: R{next_r} locked ({wait_h:.2f}h left @ {gap_h:.1f}h floor)")
 
         logger.info(f"[HEARTBEAT] {now_utc.strftime('%Y-%m-%d %H:%M:%S UTC')} | Active | QPU: {cum_qpu:.1f}s/510s | " + " | ".join(status_items))
         sys.stdout.flush()

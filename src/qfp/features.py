@@ -205,6 +205,8 @@ def build_dataset_from_raw_records(
                 "adversary_level": adversary_level,
                 "provenance": provenance,
                 "transpile_path": data.get("transpile_path", "alap"),
+                "start_timestamp": data.get("start_timestamp"),
+                "end_timestamp": data.get("end_timestamp"),
                 "chunk_idx": c_idx,
                 "sample_id": f"{backend}_r{round_id:03d}_c{c_idx:02d}",
             }
