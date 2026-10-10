@@ -171,6 +171,60 @@ Direct empirical inspection of raw IBM Quantum Runtime job metrics across `ibm_k
 - **Methodological Integrity**: Zero temporal overlap between splits ($t_{\text{train}} < t_{\text{val}} < t_{\text{test}}$). Test set retains 3 discrete rounds separated by $\ge 2.0\,\text{h}$ per backend. Total hardware jobs = 30 collection rounds + 3 initial probes = 33 jobs, consuming 264.000 QPU seconds ($51.8\%$ of the 510.0s safety cap).
 - **Reason**: Hard deadline constraint (MARC 2027) requiring data collection to end by Oct 10 12:00 local time to allow complete experimental synthesis (Stage 3 simulations, Stage 4 experiments E1–E7, Stage 5 figures and tables).
 
+---
+
+## 14. Pre-Manuscript Implementation & Artifact Audit Outcomes
+A comprehensive implementation audit was conducted on October 10, 2026, confirming the following empirical and methodological parameters:
+
+1. **Artifact & Feature Provenance Verification (E2, E4, E5)**:
+   - Zero metadata leakage: Feature vectors (196-dim `full` and 80-dim `histogram_only`) contain no timestamps, transpile paths, round identifiers, backend labels, or calibration table properties.
+   - Physical drivers: Top features separating hardware from simulators are physical decoherence and dephasing from the $30\,\mu\text{s}$ ($7500\,\text{dt}$) delay in circuit $c_{10}$ (`c10_mirror_depth24_delay__marginal_q2`: 0.1001, `dist_hellinger`: 0.0909, `marginal_q1`: 0.0893, `dist_tvd`: 0.0839, `zz_1_2`: 0.0771).
+   - Re-running E2 on `histogram_only` (80 raw bitstring outcome probabilities across the 10 circuits):
+     - Logistic Regression: Test Acc = 1.0000, ROC-AUC = 1.0000
+     - Random Forest: Test Acc = 1.0000, ROC-AUC = 1.0000
+     - SVM-RBF: Test Acc = 0.9271, ROC-AUC = 0.9990
+   - Label-shuffle control: Permuting training/test labels drops E2 Random Forest ROC-AUC to 0.4125 (vs 1.0000) and E4 Mahalanobis ROC-AUC to 0.3976–0.6250, demonstrating genuine physical separation rather than statistical artifacts.
+
+2. **Genuine-Sample Dynamics & E5 vs E1 Reconciliation**:
+   - Validation-calibrated thresholds ($\text{FPR} = 0.05$ on R6–7) and test False Rejection Rates (FRR):
+     - `ibm_fez` (threshold 16.4954): Val FRR = 0.0625; Test FRR = 0.4167 (mean score drifted: train 7.34 $\to$ R6 13.91 $\to$ R7 14.49 $\to$ test 15.87).
+     - `ibm_kingston` (threshold 23.5880): Val FRR = 0.0625; Test FRR = 0.2083 (mean score: train 7.24 $\to$ R6 15.47 $\to$ R7 22.22 $\to$ test 20.56).
+     - `ibm_marrakesh` (threshold 28.6738): Val FRR = 0.0625; Test FRR = 0.9583 (mean score drifted from train 7.04 $\to$ R6 23.76 $\to$ R7 24.91 $\to$ test 35.03).
+   - Reconciliation: E5 achieves 100% open-set rejection of `ibm_marrakesh` on `ibm_fez`'s detector because Marrakesh's test distribution is displaced to an anomaly score of 36.50 ($\gg 16.4954$ threshold). In contrast, closed-set E1 models (44–74% accuracy) must classify drifting test samples across devices whose individual centroids shift over 5 days.
+
+3. **Model Selection & Confidence Interval Characterization**:
+   - Primary model designated on validation rounds (R6–7): **Logistic Regression** (Val Acc: 0.6875, Bal Acc: 0.6875, Macro F1: 0.6830).
+   - Test performance on all five models (Rounds 8–10, no test selection):
+     - Logistic Regression (Designated Primary): Test Acc = **0.6667** | Round-CI: [0.583, 0.708] | Chunk-CI: [0.569, 0.778]
+     - SVM-RBF: Test Acc = **0.7361** | Round-CI: [0.625, 0.875] | Chunk-CI: [0.625, 0.833]
+     - MLP: Test Acc = **0.5139** | Round-CI: [0.417, 0.667] | Chunk-CI: [0.389, 0.625]
+     - Random Forest: Test Acc = **0.4444** | Round-CI: [0.250, 0.792] | Chunk-CI: [0.333, 0.556]
+     - Gradient Boosting: Test Acc = **0.4028** | Round-CI: [0.208, 0.583] | Chunk-CI: [0.292, 0.514]
+   - Per-round test breakdown:
+     - Round 8: LogReg 0.7083, SVM 0.7083, RF 0.2500, GB 0.2083, MLP 0.4583
+     - Round 9: LogReg 0.5833, SVM 0.6250, RF 0.2917, GB 0.4167, MLP 0.4167
+     - Round 10: LogReg 0.7083, SVM 0.8750, RF 0.7917, GB 0.5833, MLP 0.6667
+   - Resampling units: E1 resamples clusters of chunks across rounds with replacement; E3 intervals are chunk-level within each single evaluated round.
+
+4. **Record Recovery & Exclusion Audit**:
+   - Tagged records:
+     - `ibm_kingston` Round 5: `transpile_fallback` (ALAP `cz` gate duration bug; native basis transpilation).
+     - `ibm_kingston` Round 9: `post_hoc_api_retrieval` (job `db4c73o4qg6s73c1vucg` executed; local socket timeout recovered via API).
+     - `ibm_kingston` Round 10: `post_hoc_api_retrieval` (job `db4gqkcvf2bc73cujge0` executed; local socket timeout recovered via API).
+   - In all recovered records, measured bitstring counts from the QPU payload are unaltered.
+   - Performance excluding recovered Kingston rounds:
+     - E1 Test Accuracy: Logistic Regression 0.6071 (-0.0595), SVM-RBF 0.8214 (+0.0853), Random Forest 0.4107 (-0.0337).
+     - E3 Persistence: R3 0.8333, R4 1.0000, R5 0.8750 (-0.0417), R6 0.6667, R7 0.3750, R8 0.5000, R9 0.2500 (+0.0417), R10 0.6250 (+0.0833).
+
+5. **QPU Usage Ledger**:
+   - Sum of `service.job(id).usage()` across all 33 IBM Quantum jobs: **240.000 s** (30 rounds $\times$ 8.0s) + **24.000 s** (3 probes $\times$ 8.0s) = **264.000 s**.
+   - Exactly matches `data/interim/budget_state.json` (discrepancy = 0.000 s).
+
+6. **Log Evidence for Collection Halting at Round 10**:
+   - `pipeline_autonomous.log` records a 361.6-minute (6.03-hour) host sleep beginning at 2026-10-09 23:14 local, which caused a client-side socket name resolution error while polling Kingston Round 10.
+   - Orchestrator safety halt triggered at 2026-10-10 05:14:53 local (`exit code 1`).
+   - At agent resumption (~10:30 local), only 1.5 hours remained before the 12:00 local cutoff—insufficient to satisfy the mandatory 2.0-hour inter-round floors for rounds 11 and 12 ($>4.0\,\text{h}$ required).
+
 
 
 

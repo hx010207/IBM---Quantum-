@@ -813,5 +813,6 @@
         }
       ]
     }
-  }
+  },
+  "recovery": "post_hoc_api_retrieval (client socket timeout during system sleep; payload fetched via job_id db4c73o4qg6s73c1vucg)"
 }

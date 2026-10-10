@@ -45,3 +45,13 @@ This document records the empirical boundaries, hardware limitations, and factua
 - **Sample Distribution**: The experimental dataset contains 10 discrete rounds across 3 operational backends (train: 1-5, val: 6-7, test: 8-10), providing 3 test rounds rather than the originally envisioned 5 test rounds under Schedule B.
 - **Statistical Power**: The 3 test rounds provide 24 independent test chunks per backend-circuit pair (720 test evaluations total), fully sufficient for non-parametric bootstrap resampling (200 iterations) and chronological evaluation, while capturing physical drift across calibration cycles.
 
+---
+
+## 7. Pre-Paper Implementation Audit Findings & Quantitative Boundaries
+- **Temporal Drift vs Genuine False-Reject Rate**: Fixed validation thresholds ($\text{FPR}=0.05$ on rounds 6–7) incur substantial genuine FRR on test rounds 8–10 due to physical hardware drift: `ibm_fez` FRR = 0.4167, `ibm_kingston` FRR = 0.2083, and `ibm_marrakesh` FRR = 0.9583. While open-set rejection of held-out backends remains 100.0% (mean score 36.50 vs 15.87 for Fez), genuine devices also drift away from their training/validation manifolds.
+- **Model Selection Protocol**: Logistic Regression was selected as primary model based strictly on validation rounds 6–7 (Val Acc: 0.6875). Test accuracy for this primary model is 0.6667 (Bal Acc: 0.6667, Macro F1: 0.6440, 95% Round-CI: [0.583, 0.708]). SVM-RBF achieved 0.7361 on test, while tree ensembles degraded significantly under temporal drift (Random Forest: 0.4444; Gradient Boosting: 0.4028).
+- **Confidence Interval Structure**: CIs in `results.json` for E1 resample rounds (multisets of [8, 9, 10]); chunk-level CIs for E3 reflect intra-round shot variance ($n=24$ chunks/round).
+- **Hardware Record Recoveries**: Three rounds were recovered: `ibm_kingston` Round 5 (Qiskit ALAP missing `cz` gate duration fallback) and `ibm_kingston` Rounds 9 and 10 (post-hoc API retrieval after local worker socket timeout during 361.6-minute host sleep). Excluding recovered Kingston rounds shifts E1 test accuracy between -0.0595 and +0.0853.
+- **Log Evidence for Halting at Round 10**: `pipeline_autonomous.log` records submission of Round 10 at 21:20:15 local on 2026-10-09. Host sleep of 361.6 minutes caused a socket disconnection (`getaddrinfo failed`), triggering the orchestrator safety halt at 05:14:53 local. When resumed at ~10:30 local, only 1.5 hours remained until the 12:00 cutoff, preventing rounds 11–12 under the 2.0-hour hard floor.
+
+

@@ -808,5 +808,6 @@
       ]
     }
   },
-  "transpile_path": "alap"
+  "transpile_path": "alap",
+  "recovery": "none"
 }
