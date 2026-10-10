@@ -160,6 +160,17 @@ Direct empirical inspection of raw IBM Quantum Runtime job metrics across `ibm_k
   - In E3 (cross-day persistence), E5 (open-set), and all longitudinal evaluations, analyses compute and report the **exact elapsed wall-clock hours** derived directly from raw execution timestamps rather than assuming uniform round spacing.
   - Confidence intervals are computed via round-level bootstrap resampling, accompanied by explicit notes and documentation that test rounds are not fully independent due to the compressed 2.0h cadence.
 
+---
+
+## 13. Data Collection Cutoff and Split Locking (Oct 10 12:00 Local Cutoff)
+- **Cutoff Enforcement**: At the hard deadline cutoff of Oct 10 12:00 local time (06:30 UTC), hardware collection concluded at Round 10, the highest common round completed across all three operational backends (`ibm_fez`, `ibm_kingston`, `ibm_marrakesh`).
+- **Split Definition Locked in study.yaml**:
+  - **Training Split**: Rounds 1, 2, 3, 4, 5 (5 rounds; 40 sample chunks per circuit per backend; establishing multi-day historical baseline).
+  - **Validation Split**: Rounds 6, 7 (2 rounds; 16 sample chunks per circuit per backend; threshold calibration and hyperparameter validation).
+  - **Test Split**: Rounds 8, 9, 10 (3 rounds; 24 sample chunks per circuit per backend; out-of-sample chronological evaluation).
+- **Methodological Integrity**: Zero temporal overlap between splits ($t_{\text{train}} < t_{\text{val}} < t_{\text{test}}$). Test set retains 3 discrete rounds separated by $\ge 2.0\,\text{h}$ per backend. Total hardware jobs = 30 collection rounds + 3 initial probes = 33 jobs, consuming 264.000 QPU seconds ($51.8\%$ of the 510.0s safety cap).
+- **Reason**: Hard deadline constraint (MARC 2027) requiring data collection to end by Oct 10 12:00 local time to allow complete experimental synthesis (Stage 3 simulations, Stage 4 experiments E1–E7, Stage 5 figures and tables).
+
 
 
 

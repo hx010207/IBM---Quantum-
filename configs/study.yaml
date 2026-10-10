@@ -91,7 +91,7 @@ sampling:
   shots_per_circuit: 2048
   chunks_per_round: 8
   shots_per_chunk: 256
-  rounds_target: 12
+  rounds_target: 10
 splits:
   train_rounds:
   - 1
@@ -106,8 +106,6 @@ splits:
   - 8
   - 9
   - 10
-  - 11
-  - 12
   leakage_comparison: random_split_chunk_level
 detection:
   fpr_targets:

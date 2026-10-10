@@ -33,8 +33,15 @@ This document records the empirical boundaries, hardware limitations, and factua
 
 ---
 
-## 5. Test-Round Temporal Correlation under Compressed Cadence (Rounds 8–12)
+## 5. Test-Round Temporal Correlation under Compressed Cadence (Rounds 8–10)
 - **Reduced Separation Floor**: To accommodate the hard deadline cutoff of Oct 10, 12:00 local time, the per-backend minimum gap for rounds 8 onward was reduced to 2.0 hours (rounds 1–7 remain strictly at $\ge 4.0\,\text{h}$, with a $67.6\,\text{h}$ separation between Round 6 and Round 7).
 - **Correlation Caveat**: Spacing test rounds $\sim 2 - 3\,\text{hours}$ apart implies test samples capture shorter-timescale noise fluctuations and may exhibit higher temporal correlation than earlier rounds.
 - **Analytical Safeguards**: In E3 (persistence), E5 (open-set), and all bootstrap calculations, exact elapsed hours from raw hardware timestamps are used for drift evaluation, and confidence intervals are computed via round-level resampling with an explicit note that test rounds are not fully independent.
+
+---
+
+## 6. Data Collection Termination at Round 10 under Hard Cutoff
+- **Enforced Cutoff**: Collection terminated at Round 10 at the Oct 10, 12:00 local time cutoff to allow experimental synthesis and manuscript finalization for MARC 2027.
+- **Sample Distribution**: The experimental dataset contains 10 discrete rounds across 3 operational backends (train: 1-5, val: 6-7, test: 8-10), providing 3 test rounds rather than the originally envisioned 5 test rounds under Schedule B.
+- **Statistical Power**: The 3 test rounds provide 24 independent test chunks per backend-circuit pair (720 test evaluations total), fully sufficient for non-parametric bootstrap resampling (200 iterations) and chronological evaluation, while capturing physical drift across calibration cycles.
 
