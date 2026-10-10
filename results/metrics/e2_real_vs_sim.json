@@ -1,0 +1,14 @@
+{
+  "logistic_regression": {
+    "accuracy": 1.0,
+    "f1": 1.0
+  },
+  "random_forest": {
+    "accuracy": 1.0,
+    "f1": 1.0
+  },
+  "svm_rbf": {
+    "accuracy": 0.9548611111111112,
+    "f1": 0.9007633587786259
+  }
+}

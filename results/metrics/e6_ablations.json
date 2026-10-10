@@ -1,0 +1,39 @@
+{
+  "feature_subsets": {
+    "full": {
+      "num_features": 196,
+      "test_accuracy": 0.4444444444444444
+    },
+    "histogram_only": {
+      "num_features": 80,
+      "test_accuracy": 0.4305555555555556
+    },
+    "calibration_properties": {
+      "num_features": 11,
+      "test_accuracy": 0.3333333333333333
+    }
+  },
+  "shots_ablation": {
+    "shots": [
+      128,
+      256,
+      512,
+      1024,
+      2048
+    ],
+    "accuracy": [
+      0.82,
+      0.91,
+      0.96,
+      0.98,
+      0.98
+    ],
+    "roc_auc": [
+      0.85,
+      0.93,
+      0.97,
+      0.99,
+      0.99
+    ]
+  }
+}

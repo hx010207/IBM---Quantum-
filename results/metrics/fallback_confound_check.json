@@ -1,0 +1,16 @@
+{
+  "ibm_kingston": {
+    "fallback_rounds": [
+      5
+    ],
+    "total_rounds": 10,
+    "num_fallback_samples": 8,
+    "num_alap_samples": 72,
+    "mean_distance_to_alap_centroid": 1.175789438891835,
+    "alap_mean_distance": 0.8281482087877876,
+    "alap_std_distance": 0.2610364515117834,
+    "z_score": 1.331772734263444,
+    "is_outlier": false,
+    "summary": "1/10 collection rounds used fallback transpilation (ibm_kingston Round [5]); distance z-score=1.33 relative to ALAP centroid; no detectable outlier effect."
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "trained_on": "ibm_fez",
+  "unseen_backend": "ibm_marrakesh",
+  "calibrated_threshold": 16.495400882876226,
+  "rejection_rate": 1.0,
+  "bootstrap_ci_95": {
+    "mean": 1.0,
+    "ci_lower": 1.0,
+    "ci_upper": 1.0,
+    "ci_half_width": 0.0,
+    "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+  },
+  "elapsed_hours_train_to_test_start": 78.49,
+  "elapsed_hours_train_to_test_span": 85.81,
+  "open_set_flagged": true,
+  "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence; evaluation samples across test rounds are not fully independent."
+}

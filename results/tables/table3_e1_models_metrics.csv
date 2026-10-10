@@ -1,0 +1,6 @@
+Supervised Model,Chronological Accuracy,Balanced Accuracy,Macro F1-Score,Bootstrap 95\% CI
+Logistic Regression,0.667 $\pm$ 0.042,0.667,0.644,"[0.625, 0.708]"
+Svm Rbf,0.736 $\pm$ 0.084,0.736,0.702,"[0.653, 0.821]"
+Random Forest,0.444 $\pm$ 0.190,0.444,0.460,"[0.250, 0.629]"
+Gradient Boosting,0.403 $\pm$ 0.160,0.403,0.381,"[0.208, 0.529]"
+Mlp,0.514 $\pm$ 0.084,0.514,0.490,"[0.431, 0.599]"

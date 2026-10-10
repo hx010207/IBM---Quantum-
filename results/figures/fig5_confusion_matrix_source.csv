@@ -1,0 +1,10 @@
+true_backend,pred_backend,count,normalized
+ibm_fez,ibm_fez,10,0.4166666666666667
+ibm_fez,ibm_kingston,2,0.08333333333333333
+ibm_fez,ibm_marrakesh,12,0.5
+ibm_kingston,ibm_fez,3,0.125
+ibm_kingston,ibm_kingston,16,0.6666666666666666
+ibm_kingston,ibm_marrakesh,5,0.20833333333333334
+ibm_marrakesh,ibm_fez,18,0.75
+ibm_marrakesh,ibm_kingston,0,0.0
+ibm_marrakesh,ibm_marrakesh,6,0.25

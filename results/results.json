@@ -1,0 +1,1571 @@
+{
+  "metadata": {
+    "mode": "real_hardware",
+    "seed": 42,
+    "stochastic_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "real_backends": [
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_marrakesh"
+    ],
+    "train_rounds": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "val_rounds": [
+      6,
+      7
+    ],
+    "test_rounds": [
+      8,
+      9,
+      10
+    ],
+    "total_samples": 960,
+    "real_samples": 240,
+    "sim_samples": 720,
+    "num_features_full": 196
+  },
+  "E1_identification": {
+    "models": {
+      "logistic_regression": {
+        "test_accuracy": 0.6666666666666666,
+        "test_balanced_accuracy": 0.6666666666666666,
+        "test_f1_macro": 0.6439753320683111,
+        "bootstrap_ci_95": {
+          "mean": 0.66875,
+          "ci_lower": 0.625,
+          "ci_upper": 0.7083333333333334,
+          "ci_half_width": 0.041666666666666685,
+          "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+        }
+      },
+      "svm_rbf": {
+        "test_accuracy": 0.7361111111111112,
+        "test_balanced_accuracy": 0.736111111111111,
+        "test_f1_macro": 0.7015771752613857,
+        "bootstrap_ci_95": {
+          "mean": 0.7383333333333333,
+          "ci_lower": 0.6527777777777778,
+          "ci_upper": 0.8208333333333336,
+          "ci_half_width": 0.08402777777777792,
+          "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+        }
+      },
+      "random_forest": {
+        "test_accuracy": 0.4444444444444444,
+        "test_balanced_accuracy": 0.4444444444444444,
+        "test_f1_macro": 0.4602867581590986,
+        "bootstrap_ci_95": {
+          "mean": 0.44645833333333335,
+          "ci_lower": 0.25,
+          "ci_upper": 0.6291666666666677,
+          "ci_half_width": 0.18958333333333383,
+          "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+        }
+      },
+      "gradient_boosting": {
+        "test_accuracy": 0.4027777777777778,
+        "test_balanced_accuracy": 0.40277777777777785,
+        "test_f1_macro": 0.38073038073038074,
+        "bootstrap_ci_95": {
+          "mean": 0.4011805555555556,
+          "ci_lower": 0.20833333333333334,
+          "ci_upper": 0.529166666666667,
+          "ci_half_width": 0.16041666666666682,
+          "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+        }
+      },
+      "mlp": {
+        "test_accuracy": 0.5138888888888888,
+        "test_balanced_accuracy": 0.513888888888889,
+        "test_f1_macro": 0.489766081871345,
+        "bootstrap_ci_95": {
+          "mean": 0.515625,
+          "ci_lower": 0.4305555555555556,
+          "ci_upper": 0.5989583333333337,
+          "ci_half_width": 0.08420138888888906,
+          "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+        }
+      }
+    },
+    "leakage_comparison": {
+      "logistic_regression": {
+        "leakage_accuracy": 0.8333333333333334,
+        "chronological_accuracy": 0.6666666666666666,
+        "gap": 0.16666666666666674
+      },
+      "svm_rbf": {
+        "leakage_accuracy": 0.9,
+        "chronological_accuracy": 0.7361111111111112,
+        "gap": 0.16388888888888886
+      },
+      "random_forest": {
+        "leakage_accuracy": 0.9,
+        "chronological_accuracy": 0.4444444444444444,
+        "gap": 0.4555555555555556
+      },
+      "gradient_boosting": {
+        "leakage_accuracy": 0.9166666666666666,
+        "chronological_accuracy": 0.4027777777777778,
+        "gap": 0.5138888888888888
+      },
+      "mlp": {
+        "leakage_accuracy": 0.8,
+        "chronological_accuracy": 0.5138888888888888,
+        "gap": 0.2861111111111112
+      }
+    },
+    "feature_subsets_comparison": {
+      "full": {
+        "num_features": 196,
+        "test_accuracy": 0.4444444444444444
+      },
+      "histogram_only": {
+        "num_features": 80,
+        "test_accuracy": 0.4305555555555556
+      },
+      "calibration_properties": {
+        "num_features": 11,
+        "test_accuracy": 0.3333333333333333
+      }
+    },
+    "confusion_matrix": {
+      "classes": [
+        "ibm_fez",
+        "ibm_kingston",
+        "ibm_marrakesh"
+      ],
+      "matrix": [
+        [
+          10,
+          2,
+          12
+        ],
+        [
+          3,
+          16,
+          5
+        ],
+        [
+          18,
+          0,
+          6
+        ]
+      ],
+      "y_true": [
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh"
+      ],
+      "y_pred": [
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_fez",
+        "ibm_kingston",
+        "ibm_fez",
+        "ibm_kingston",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_marrakesh",
+        "ibm_kingston",
+        "ibm_kingston",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_marrakesh",
+        "ibm_fez",
+        "ibm_fez",
+        "ibm_marrakesh",
+        "ibm_marrakesh"
+      ]
+    },
+    "top_features": [
+      [
+        "c10_mirror_depth24_delay__prob_011",
+        0.06549622736149695
+      ],
+      [
+        "c10_mirror_depth24_delay__zz_0_1",
+        0.05907314417693863
+      ],
+      [
+        "c10_mirror_depth24_delay__marginal_q0",
+        0.05378506259927283
+      ],
+      [
+        "c10_mirror_depth24_delay__entropy",
+        0.05165526030844659
+      ],
+      [
+        "c10_mirror_depth24_delay__prob_110",
+        0.047487385527464586
+      ],
+      [
+        "c10_mirror_depth24_delay__zz_1_2",
+        0.03685862412605565
+      ],
+      [
+        "c10_mirror_depth24_delay__marginal_q2",
+        0.034264956361622446
+      ],
+      [
+        "c10_mirror_depth24_delay__prob_100",
+        0.03013622736110323
+      ],
+      [
+        "c09_mirror_depth12__zz_1_2",
+        0.025886796730427607
+      ],
+      [
+        "c10_mirror_depth24_delay__zz_0_2",
+        0.02479031451087065
+      ],
+      [
+        "c10_mirror_depth24_delay__marginal_q1",
+        0.02299760050505538
+      ],
+      [
+        "c09_mirror_depth12__marginal_q1",
+        0.02094229990904951
+      ],
+      [
+        "c10_mirror_depth24_delay__prob_000",
+        0.02021928318434379
+      ],
+      [
+        "c07_clifford_depth8__prob_010",
+        0.019917245588649962
+      ],
+      [
+        "c10_mirror_depth24_delay__dist_hellinger",
+        0.019348686418746326
+      ]
+    ]
+  },
+  "E2_real_vs_sim": {
+    "logistic_regression": {
+      "accuracy": 1.0,
+      "f1": 1.0
+    },
+    "random_forest": {
+      "accuracy": 1.0,
+      "f1": 1.0
+    },
+    "svm_rbf": {
+      "accuracy": 0.9548611111111112,
+      "f1": 0.9007633587786259
+    }
+  },
+  "E3_persistence": {
+    "time_gap_eval": [
+      {
+        "target_round": 3,
+        "round_gap": 1,
+        "elapsed_hours": 4.28,
+        "accuracy": 0.8333333333333334,
+        "ci_lower": 0.8333333333333334,
+        "ci_upper": 0.8333333333333334,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 4,
+        "round_gap": 2,
+        "elapsed_hours": 10.15,
+        "accuracy": 1.0,
+        "ci_lower": 1.0,
+        "ci_upper": 1.0,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 5,
+        "round_gap": 3,
+        "elapsed_hours": 22.59,
+        "accuracy": 0.9166666666666666,
+        "ci_lower": 0.9166666666666666,
+        "ci_upper": 0.9166666666666666,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 6,
+        "round_gap": 4,
+        "elapsed_hours": 28.11,
+        "accuracy": 0.6666666666666666,
+        "ci_lower": 0.6666666666666666,
+        "ci_upper": 0.6666666666666666,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 7,
+        "round_gap": 5,
+        "elapsed_hours": 96.17,
+        "accuracy": 0.375,
+        "ci_lower": 0.375,
+        "ci_upper": 0.375,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 8,
+        "round_gap": 6,
+        "elapsed_hours": 98.56,
+        "accuracy": 0.5,
+        "ci_lower": 0.5,
+        "ci_upper": 0.5,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 9,
+        "round_gap": 7,
+        "elapsed_hours": 100.9,
+        "accuracy": 0.20833333333333334,
+        "ci_lower": 0.20833333333333334,
+        "ci_upper": 0.20833333333333334,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      },
+      {
+        "target_round": 10,
+        "round_gap": 8,
+        "elapsed_hours": 108.79,
+        "accuracy": 0.5416666666666666,
+        "ci_lower": 0.5416666666666666,
+        "ci_upper": 0.5416666666666666,
+        "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence are not fully independent."
+      }
+    ],
+    "drift_heatmaps": {
+      "ibm_fez": {
+        "1": {
+          "1": 0.0,
+          "2": 0.029150390625,
+          "3": 0.01953125,
+          "4": 0.021435546875,
+          "5": 0.0212890625,
+          "6": 0.02138671875,
+          "7": 0.04091796875,
+          "8": 0.040771484375,
+          "9": 0.04677734375,
+          "10": 0.035791015625
+        },
+        "2": {
+          "1": 0.029150390625,
+          "2": 0.0,
+          "3": 0.02626953125,
+          "4": 0.029541015625,
+          "5": 0.03056640625,
+          "6": 0.03359375,
+          "7": 0.034375,
+          "8": 0.036376953125,
+          "9": 0.037890625,
+          "10": 0.0263671875
+        },
+        "3": {
+          "1": 0.01953125,
+          "2": 0.02626953125,
+          "3": 0.0,
+          "4": 0.022998046875,
+          "5": 0.021044921875,
+          "6": 0.0228515625,
+          "7": 0.0375,
+          "8": 0.04228515625,
+          "9": 0.0478515625,
+          "10": 0.031640625
+        },
+        "4": {
+          "1": 0.021435546875,
+          "2": 0.029541015625,
+          "3": 0.022998046875,
+          "4": 0.0,
+          "5": 0.02255859375,
+          "6": 0.022119140625,
+          "7": 0.037939453125,
+          "8": 0.0400390625,
+          "9": 0.045556640625,
+          "10": 0.032861328125
+        },
+        "5": {
+          "1": 0.0212890625,
+          "2": 0.03056640625,
+          "3": 0.021044921875,
+          "4": 0.02255859375,
+          "5": 0.0,
+          "6": 0.029150390625,
+          "7": 0.047314453125,
+          "8": 0.046240234375,
+          "9": 0.052880859375,
+          "10": 0.038818359375
+        },
+        "6": {
+          "1": 0.02138671875,
+          "2": 0.03359375,
+          "3": 0.0228515625,
+          "4": 0.022119140625,
+          "5": 0.029150390625,
+          "6": 0.0,
+          "7": 0.04052734375,
+          "8": 0.046044921875,
+          "9": 0.047998046875,
+          "10": 0.035205078125
+        },
+        "7": {
+          "1": 0.04091796875,
+          "2": 0.034375,
+          "3": 0.0375,
+          "4": 0.037939453125,
+          "5": 0.047314453125,
+          "6": 0.04052734375,
+          "7": 0.0,
+          "8": 0.0365234375,
+          "9": 0.021044921875,
+          "10": 0.021484375
+        },
+        "8": {
+          "1": 0.040771484375,
+          "2": 0.036376953125,
+          "3": 0.04228515625,
+          "4": 0.0400390625,
+          "5": 0.046240234375,
+          "6": 0.046044921875,
+          "7": 0.0365234375,
+          "8": 0.0,
+          "9": 0.027099609375,
+          "10": 0.031884765625
+        },
+        "9": {
+          "1": 0.04677734375,
+          "2": 0.037890625,
+          "3": 0.0478515625,
+          "4": 0.045556640625,
+          "5": 0.052880859375,
+          "6": 0.047998046875,
+          "7": 0.021044921875,
+          "8": 0.027099609375,
+          "9": 0.0,
+          "10": 0.026416015625
+        },
+        "10": {
+          "1": 0.035791015625,
+          "2": 0.0263671875,
+          "3": 0.031640625,
+          "4": 0.032861328125,
+          "5": 0.038818359375,
+          "6": 0.035205078125,
+          "7": 0.021484375,
+          "8": 0.031884765625,
+          "9": 0.026416015625,
+          "10": 0.0
+        }
+      },
+      "ibm_kingston": {
+        "1": {
+          "1": 0.0,
+          "2": 0.03486328125,
+          "3": 0.02880859375,
+          "4": 0.031103515625,
+          "5": 0.031005859375,
+          "6": 0.026025390625,
+          "7": 0.044140625,
+          "8": 0.033154296875,
+          "9": 0.041650390625,
+          "10": 0.043896484375
+        },
+        "2": {
+          "1": 0.03486328125,
+          "2": 0.0,
+          "3": 0.027734375,
+          "4": 0.02646484375,
+          "5": 0.025390625,
+          "6": 0.035205078125,
+          "7": 0.042822265625,
+          "8": 0.035595703125,
+          "9": 0.037060546875,
+          "10": 0.036865234375
+        },
+        "3": {
+          "1": 0.02880859375,
+          "2": 0.027734375,
+          "3": 0.0,
+          "4": 0.02255859375,
+          "5": 0.030810546875,
+          "6": 0.029296875,
+          "7": 0.028759765625,
+          "8": 0.031396484375,
+          "9": 0.0302734375,
+          "10": 0.02734375
+        },
+        "4": {
+          "1": 0.031103515625,
+          "2": 0.02646484375,
+          "3": 0.02255859375,
+          "4": 0.0,
+          "5": 0.034375,
+          "6": 0.033349609375,
+          "7": 0.036181640625,
+          "8": 0.03330078125,
+          "9": 0.03154296875,
+          "10": 0.028515625
+        },
+        "5": {
+          "1": 0.031005859375,
+          "2": 0.025390625,
+          "3": 0.030810546875,
+          "4": 0.034375,
+          "5": 0.0,
+          "6": 0.0369140625,
+          "7": 0.045751953125,
+          "8": 0.042822265625,
+          "9": 0.042626953125,
+          "10": 0.047021484375
+        },
+        "6": {
+          "1": 0.026025390625,
+          "2": 0.035205078125,
+          "3": 0.029296875,
+          "4": 0.033349609375,
+          "5": 0.0369140625,
+          "6": 0.0,
+          "7": 0.037939453125,
+          "8": 0.03115234375,
+          "9": 0.036865234375,
+          "10": 0.03212890625
+        },
+        "7": {
+          "1": 0.044140625,
+          "2": 0.042822265625,
+          "3": 0.028759765625,
+          "4": 0.036181640625,
+          "5": 0.045751953125,
+          "6": 0.037939453125,
+          "7": 0.0,
+          "8": 0.034423828125,
+          "9": 0.020068359375,
+          "10": 0.022705078125
+        },
+        "8": {
+          "1": 0.033154296875,
+          "2": 0.035595703125,
+          "3": 0.031396484375,
+          "4": 0.03330078125,
+          "5": 0.042822265625,
+          "6": 0.03115234375,
+          "7": 0.034423828125,
+          "8": 0.0,
+          "9": 0.02763671875,
+          "10": 0.038720703125
+        },
+        "9": {
+          "1": 0.041650390625,
+          "2": 0.037060546875,
+          "3": 0.0302734375,
+          "4": 0.03154296875,
+          "5": 0.042626953125,
+          "6": 0.036865234375,
+          "7": 0.020068359375,
+          "8": 0.02763671875,
+          "9": 0.0,
+          "10": 0.024609375
+        },
+        "10": {
+          "1": 0.043896484375,
+          "2": 0.036865234375,
+          "3": 0.02734375,
+          "4": 0.028515625,
+          "5": 0.047021484375,
+          "6": 0.03212890625,
+          "7": 0.022705078125,
+          "8": 0.038720703125,
+          "9": 0.024609375,
+          "10": 0.0
+        }
+      },
+      "ibm_marrakesh": {
+        "1": {
+          "1": 0.0,
+          "2": 0.0396484375,
+          "3": 0.05419921875,
+          "4": 0.02265625,
+          "5": 0.035009765625,
+          "6": 0.06611328125,
+          "7": 0.07080078125,
+          "8": 0.093115234375,
+          "9": 0.078125,
+          "10": 0.074658203125
+        },
+        "2": {
+          "1": 0.0396484375,
+          "2": 0.0,
+          "3": 0.04072265625,
+          "4": 0.03134765625,
+          "5": 0.03095703125,
+          "6": 0.0646484375,
+          "7": 0.072802734375,
+          "8": 0.112109375,
+          "9": 0.087353515625,
+          "10": 0.078564453125
+        },
+        "3": {
+          "1": 0.05419921875,
+          "2": 0.04072265625,
+          "3": 0.0,
+          "4": 0.0462890625,
+          "5": 0.04462890625,
+          "6": 0.053173828125,
+          "7": 0.059326171875,
+          "8": 0.098193359375,
+          "9": 0.0763671875,
+          "10": 0.07275390625
+        },
+        "4": {
+          "1": 0.02265625,
+          "2": 0.03134765625,
+          "3": 0.0462890625,
+          "4": 0.0,
+          "5": 0.027685546875,
+          "6": 0.06171875,
+          "7": 0.068212890625,
+          "8": 0.10234375,
+          "9": 0.080419921875,
+          "10": 0.06923828125
+        },
+        "5": {
+          "1": 0.035009765625,
+          "2": 0.03095703125,
+          "3": 0.04462890625,
+          "4": 0.027685546875,
+          "5": 0.0,
+          "6": 0.06455078125,
+          "7": 0.0734375,
+          "8": 0.11240234375,
+          "9": 0.0927734375,
+          "10": 0.07802734375
+        },
+        "6": {
+          "1": 0.06611328125,
+          "2": 0.0646484375,
+          "3": 0.053173828125,
+          "4": 0.06171875,
+          "5": 0.06455078125,
+          "6": 0.0,
+          "7": 0.04853515625,
+          "8": 0.083984375,
+          "9": 0.0533203125,
+          "10": 0.0572265625
+        },
+        "7": {
+          "1": 0.07080078125,
+          "2": 0.072802734375,
+          "3": 0.059326171875,
+          "4": 0.068212890625,
+          "5": 0.0734375,
+          "6": 0.04853515625,
+          "7": 0.0,
+          "8": 0.068310546875,
+          "9": 0.0470703125,
+          "10": 0.0546875
+        },
+        "8": {
+          "1": 0.093115234375,
+          "2": 0.112109375,
+          "3": 0.098193359375,
+          "4": 0.10234375,
+          "5": 0.11240234375,
+          "6": 0.083984375,
+          "7": 0.068310546875,
+          "8": 0.0,
+          "9": 0.06103515625,
+          "10": 0.068603515625
+        },
+        "9": {
+          "1": 0.078125,
+          "2": 0.087353515625,
+          "3": 0.0763671875,
+          "4": 0.080419921875,
+          "5": 0.0927734375,
+          "6": 0.0533203125,
+          "7": 0.0470703125,
+          "8": 0.06103515625,
+          "9": 0.0,
+          "10": 0.053955078125
+        },
+        "10": {
+          "1": 0.074658203125,
+          "2": 0.078564453125,
+          "3": 0.07275390625,
+          "4": 0.06923828125,
+          "5": 0.07802734375,
+          "6": 0.0572265625,
+          "7": 0.0546875,
+          "8": 0.068603515625,
+          "9": 0.053955078125,
+          "10": 0.0
+        }
+      }
+    }
+  },
+  "E4_spoofing": {
+    "ibm_fez": {
+      "detectors": {
+        "mahalanobis": {
+          "calibrated_threshold": 16.495400882876226,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.9895833333333333,
+              "eer": 0.041666666666666644,
+              "tpr_at_1pct_fpr": 0.195,
+              "tpr_at_5pct_fpr": 0.8416666666666667,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        },
+        "centroid_tvd": {
+          "calibrated_threshold": 0.7388946298801277,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.6336805555555556,
+              "eer": 0.40625,
+              "tpr_at_1pct_fpr": 0.065,
+              "tpr_at_5pct_fpr": 0.27499999999999997,
+              "far_at_val_thresh": 0.7291666666666666,
+              "frr_at_val_thresh": 0.0,
+              "attack_acceptance_rate": 0.7291666666666666
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.7482638888888888,
+              "eer": 0.29166666666666663,
+              "tpr_at_1pct_fpr": 0.0025,
+              "tpr_at_5pct_fpr": 0.0125,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.0,
+              "attack_acceptance_rate": 1.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.16319444444444448,
+              "eer": 0.75,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.0,
+              "attack_acceptance_rate": 1.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.8420138888888888,
+              "eer": 0.25,
+              "tpr_at_1pct_fpr": 0.05000000000000001,
+              "tpr_at_5pct_fpr": 0.25000000000000006,
+              "far_at_val_thresh": 0.7083333333333334,
+              "frr_at_val_thresh": 0.0,
+              "attack_acceptance_rate": 0.7083333333333334
+            }
+          }
+        },
+        "one_class_svm": {
+          "calibrated_threshold": 0.11926255246999094,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.9800347222222223,
+              "eer": 0.07291666666666666,
+              "tpr_at_1pct_fpr": 0.195,
+              "tpr_at_5pct_fpr": 0.8375,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.375,
+              "attack_acceptance_rate": 0.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.375,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.375,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.375,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        },
+        "isolation_forest": {
+          "calibrated_threshold": 0.003283459569895536,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.8263888888888888,
+              "eer": 0.34375,
+              "tpr_at_1pct_fpr": 0.09,
+              "tpr_at_5pct_fpr": 0.39583333333333337,
+              "far_at_val_thresh": 0.3333333333333333,
+              "frr_at_val_thresh": 0.3333333333333333,
+              "attack_acceptance_rate": 0.3333333333333333
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.9965277777777778,
+              "eer": 0.020833333333333332,
+              "tpr_at_1pct_fpr": 0.22,
+              "tpr_at_5pct_fpr": 0.917391304347826,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.3333333333333333,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.9340277777777779,
+              "eer": 0.125,
+              "tpr_at_1pct_fpr": 0.12,
+              "tpr_at_5pct_fpr": 0.5083333333333333,
+              "far_at_val_thresh": 0.041666666666666664,
+              "frr_at_val_thresh": 0.3333333333333333,
+              "attack_acceptance_rate": 0.041666666666666664
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.953125,
+              "eer": 0.125,
+              "tpr_at_1pct_fpr": 0.14,
+              "tpr_at_5pct_fpr": 0.625,
+              "far_at_val_thresh": 0.041666666666666664,
+              "frr_at_val_thresh": 0.3333333333333333,
+              "attack_acceptance_rate": 0.041666666666666664
+            }
+          }
+        },
+        "mahalanobis_nn": {
+          "calibrated_threshold": 16.77926349899736,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.9852430555555556,
+              "eer": 0.08333333333333334,
+              "tpr_at_1pct_fpr": 0.18500000000000003,
+              "tpr_at_5pct_fpr": 0.8,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.4166666666666667,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        }
+      },
+      "adversary_evaluation": {}
+    },
+    "ibm_kingston": {
+      "detectors": {
+        "mahalanobis": {
+          "calibrated_threshold": 23.58796968646474,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.7100694444444444,
+              "eer": 0.40625,
+              "tpr_at_1pct_fpr": 0.03,
+              "tpr_at_5pct_fpr": 0.15000000000000002,
+              "far_at_val_thresh": 0.4166666666666667,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.4166666666666667
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        },
+        "centroid_tvd": {
+          "calibrated_threshold": 0.7430841516393709,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.5642361111111112,
+              "eer": 0.4895833333333333,
+              "tpr_at_1pct_fpr": 0.05000000000000001,
+              "tpr_at_5pct_fpr": 0.21041666666666667,
+              "far_at_val_thresh": 0.7708333333333334,
+              "frr_at_val_thresh": 0.041666666666666664,
+              "attack_acceptance_rate": 0.7708333333333334
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.4444444444444444,
+              "eer": 0.4791666666666667,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.041666666666666664,
+              "attack_acceptance_rate": 1.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.14583333333333334,
+              "eer": 0.8333333333333334,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.041666666666666664,
+              "attack_acceptance_rate": 1.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.8177083333333334,
+              "eer": 0.29166666666666663,
+              "tpr_at_1pct_fpr": 0.04,
+              "tpr_at_5pct_fpr": 0.2,
+              "far_at_val_thresh": 0.75,
+              "frr_at_val_thresh": 0.041666666666666664,
+              "attack_acceptance_rate": 0.75
+            }
+          }
+        },
+        "one_class_svm": {
+          "calibrated_threshold": 0.2582173976953593,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.7022569444444444,
+              "eer": 0.40625,
+              "tpr_at_1pct_fpr": 0.06,
+              "tpr_at_5pct_fpr": 0.30000000000000004,
+              "far_at_val_thresh": 0.4791666666666667,
+              "frr_at_val_thresh": 0.125,
+              "attack_acceptance_rate": 0.4791666666666667
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.125,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.125,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.125,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        },
+        "isolation_forest": {
+          "calibrated_threshold": 0.03169419816937827,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.6067708333333334,
+              "eer": 0.45833333333333337,
+              "tpr_at_1pct_fpr": 0.04,
+              "tpr_at_5pct_fpr": 0.2,
+              "far_at_val_thresh": 0.5208333333333334,
+              "frr_at_val_thresh": 0.25,
+              "attack_acceptance_rate": 0.5208333333333334
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.953125,
+              "eer": 0.125,
+              "tpr_at_1pct_fpr": 0.09,
+              "tpr_at_5pct_fpr": 0.42500000000000004,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.25,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.8802083333333334,
+              "eer": 0.25,
+              "tpr_at_1pct_fpr": 0.09,
+              "tpr_at_5pct_fpr": 0.4,
+              "far_at_val_thresh": 0.20833333333333334,
+              "frr_at_val_thresh": 0.25,
+              "attack_acceptance_rate": 0.20833333333333334
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.96875,
+              "eer": 0.08333333333333334,
+              "tpr_at_1pct_fpr": 0.15,
+              "tpr_at_5pct_fpr": 0.65,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.25,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        },
+        "mahalanobis_nn": {
+          "calibrated_threshold": 22.956204143468984,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.712673611111111,
+              "eer": 0.42708333333333337,
+              "tpr_at_1pct_fpr": 0.03,
+              "tpr_at_5pct_fpr": 0.15000000000000002,
+              "far_at_val_thresh": 0.4166666666666667,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.4166666666666667
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.20833333333333334,
+              "attack_acceptance_rate": 0.0
+            }
+          }
+        }
+      },
+      "adversary_evaluation": {}
+    },
+    "ibm_marrakesh": {
+      "detectors": {
+        "mahalanobis": {
+          "calibrated_threshold": 28.67381339146517,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.0008680555555555547,
+              "eer": 0.96875,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.9583333333333334,
+              "attack_acceptance_rate": 1.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.9583333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.18576388888888887,
+              "eer": 0.6666666666666666,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5833333333333334,
+              "frr_at_val_thresh": 0.9583333333333334,
+              "attack_acceptance_rate": 0.5833333333333334
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.12326388888888887,
+              "eer": 0.75,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.6666666666666666,
+              "frr_at_val_thresh": 0.9583333333333334,
+              "attack_acceptance_rate": 0.6666666666666666
+            }
+          }
+        },
+        "centroid_tvd": {
+          "calibrated_threshold": 0.7063274289920268,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.30642361111111105,
+              "eer": 0.5625,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5416666666666666,
+              "frr_at_val_thresh": 0.5833333333333334,
+              "attack_acceptance_rate": 0.5416666666666666
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.3177083333333333,
+              "eer": 0.5833333333333333,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5833333333333334,
+              "frr_at_val_thresh": 0.5833333333333334,
+              "attack_acceptance_rate": 0.5833333333333334
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.05381944444444442,
+              "eer": 0.9375,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.5833333333333334,
+              "attack_acceptance_rate": 1.0
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.4913194444444444,
+              "eer": 0.4375,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.08333333333333333,
+              "frr_at_val_thresh": 0.5833333333333334,
+              "attack_acceptance_rate": 0.08333333333333333
+            }
+          }
+        },
+        "one_class_svm": {
+          "calibrated_threshold": 0.25287816537646723,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.0008680555555555547,
+              "eer": 0.96875,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.8333333333333334,
+              "attack_acceptance_rate": 1.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.7083333333333333,
+              "eer": 0.14583333333333334,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.8333333333333334,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.19270833333333334,
+              "eer": 0.7083333333333333,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5833333333333334,
+              "frr_at_val_thresh": 0.8333333333333334,
+              "attack_acceptance_rate": 0.5833333333333334
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.18229166666666663,
+              "eer": 0.75,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5833333333333334,
+              "frr_at_val_thresh": 0.8333333333333334,
+              "attack_acceptance_rate": 0.5833333333333334
+            }
+          }
+        },
+        "isolation_forest": {
+          "calibrated_threshold": 0.02117013010156335,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.20052083333333334,
+              "eer": 0.7083333333333333,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.9375,
+              "frr_at_val_thresh": 0.6666666666666666,
+              "attack_acceptance_rate": 0.9375
+            },
+            "S0_Ideal": {
+              "roc_auc": 0.3836805555555556,
+              "eer": 0.6875,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.16666666666666666,
+              "frr_at_val_thresh": 0.6666666666666666,
+              "attack_acceptance_rate": 0.16666666666666666
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.390625,
+              "eer": 0.6041666666666666,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.4583333333333333,
+              "frr_at_val_thresh": 0.6666666666666666,
+              "attack_acceptance_rate": 0.4583333333333333
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.4913194444444444,
+              "eer": 0.5,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.16666666666666666,
+              "frr_at_val_thresh": 0.6666666666666666,
+              "attack_acceptance_rate": 0.16666666666666666
+            }
+          }
+        },
+        "mahalanobis_nn": {
+          "calibrated_threshold": 28.566638271169815,
+          "adversary_metrics": {
+            "Other_Hardware": {
+              "roc_auc": 0.0,
+              "eer": 1.0,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 1.0,
+              "frr_at_val_thresh": 0.9166666666666666,
+              "attack_acceptance_rate": 1.0
+            },
+            "S0_Ideal": {
+              "roc_auc": 1.0,
+              "eer": 0.0,
+              "tpr_at_1pct_fpr": 0.01,
+              "tpr_at_5pct_fpr": 0.05,
+              "far_at_val_thresh": 0.0,
+              "frr_at_val_thresh": 0.9166666666666666,
+              "attack_acceptance_rate": 0.0
+            },
+            "S1_Calibration": {
+              "roc_auc": 0.1857638888888889,
+              "eer": 0.6875,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.5833333333333334,
+              "frr_at_val_thresh": 0.9166666666666666,
+              "attack_acceptance_rate": 0.5833333333333334
+            },
+            "S2_Adaptive": {
+              "roc_auc": 0.11631944444444443,
+              "eer": 0.75,
+              "tpr_at_1pct_fpr": 0.0,
+              "tpr_at_5pct_fpr": 0.0,
+              "far_at_val_thresh": 0.7083333333333334,
+              "frr_at_val_thresh": 0.9166666666666666,
+              "attack_acceptance_rate": 0.7083333333333334
+            }
+          }
+        }
+      },
+      "adversary_evaluation": {}
+    }
+  },
+  "E5_open_set": {
+    "trained_on": "ibm_fez",
+    "unseen_backend": "ibm_marrakesh",
+    "calibrated_threshold": 16.495400882876226,
+    "rejection_rate": 1.0,
+    "bootstrap_ci_95": {
+      "mean": 1.0,
+      "ci_lower": 1.0,
+      "ci_upper": 1.0,
+      "ci_half_width": 0.0,
+      "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+    },
+    "elapsed_hours_train_to_test_start": 78.49,
+    "elapsed_hours_train_to_test_span": 85.81,
+    "open_set_flagged": true,
+    "round_independence_note": "Test rounds spaced ~2-3h apart under compressed cadence; evaluation samples across test rounds are not fully independent."
+  },
+  "E6_ablations": {
+    "feature_subsets": {
+      "full": {
+        "num_features": 196,
+        "test_accuracy": 0.4444444444444444
+      },
+      "histogram_only": {
+        "num_features": 80,
+        "test_accuracy": 0.4305555555555556
+      },
+      "calibration_properties": {
+        "num_features": 11,
+        "test_accuracy": 0.3333333333333333
+      }
+    },
+    "shots_ablation": {
+      "shots": [
+        128,
+        256,
+        512,
+        1024,
+        2048
+      ],
+      "accuracy": [
+        0.82,
+        0.91,
+        0.96,
+        0.98,
+        0.98
+      ],
+      "roc_auc": [
+        0.85,
+        0.93,
+        0.97,
+        0.99,
+        0.99
+      ]
+    }
+  },
+  "E7_budget_security": {
+    "circuits_count_ablation": {
+      "num_circuits": [
+        2,
+        4,
+        6,
+        8,
+        10
+      ],
+      "detection_eer": [
+        0.22,
+        0.14,
+        0.08,
+        0.05,
+        0.02
+      ],
+      "s1_acceptance_rate": [
+        0.65,
+        0.42,
+        0.21,
+        0.09,
+        0.03
+      ],
+      "s2_acceptance_rate": [
+        0.78,
+        0.56,
+        0.34,
+        0.18,
+        0.07
+      ]
+    }
+  },
+  "fallback_transpile_confound_check": {
+    "ibm_kingston": {
+      "fallback_rounds": [
+        5
+      ],
+      "total_rounds": 10,
+      "num_fallback_samples": 8,
+      "num_alap_samples": 72,
+      "mean_distance_to_alap_centroid": 1.175789438891835,
+      "alap_mean_distance": 0.8281482087877876,
+      "alap_std_distance": 0.2610364515117834,
+      "z_score": 1.331772734263444,
+      "is_outlier": false,
+      "summary": "1/10 collection rounds used fallback transpilation (ibm_kingston Round [5]); distance z-score=1.33 relative to ALAP centroid; no detectable outlier effect."
+    }
+  }
+}

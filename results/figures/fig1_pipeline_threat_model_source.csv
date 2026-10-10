@@ -1,0 +1,6 @@
+stage,type
+"IBM Hardware (R1, R2, R3)",architecture_box
+Adversary Simulators S0 (Ideal) S1 (Calibration) S2 (Adaptive),architecture_box
+"Fixed Circuit Suite 10 Benchmark Circuits (Bell, GHZ, Clifford, Mirror)",architecture_box
+"Statistical Feature Extraction (196 dims) Marginals, ZZ, TVD, Entropy",architecture_box
+"Verifier / Integrity Detector (Mahalanobis, OC-SVM) Trust Score in [0, 1]",architecture_box

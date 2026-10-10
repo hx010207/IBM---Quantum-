@@ -1,0 +1,11 @@
+shots_per_chunk,metric_name,value
+128,Identification Accuracy,0.82
+256,Identification Accuracy,0.91
+512,Identification Accuracy,0.96
+1024,Identification Accuracy,0.98
+2048,Identification Accuracy,0.98
+128,Detection ROC-AUC,0.85
+256,Detection ROC-AUC,0.93
+512,Detection ROC-AUC,0.97
+1024,Detection ROC-AUC,0.99
+2048,Detection ROC-AUC,0.99

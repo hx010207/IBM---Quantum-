@@ -1,0 +1,339 @@
+{
+  "models": {
+    "logistic_regression": {
+      "test_accuracy": 0.6666666666666666,
+      "test_balanced_accuracy": 0.6666666666666666,
+      "test_f1_macro": 0.6439753320683111,
+      "bootstrap_ci_95": {
+        "mean": 0.66875,
+        "ci_lower": 0.625,
+        "ci_upper": 0.7083333333333334,
+        "ci_half_width": 0.041666666666666685,
+        "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+      }
+    },
+    "svm_rbf": {
+      "test_accuracy": 0.7361111111111112,
+      "test_balanced_accuracy": 0.736111111111111,
+      "test_f1_macro": 0.7015771752613857,
+      "bootstrap_ci_95": {
+        "mean": 0.7383333333333333,
+        "ci_lower": 0.6527777777777778,
+        "ci_upper": 0.8208333333333336,
+        "ci_half_width": 0.08402777777777792,
+        "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+      }
+    },
+    "random_forest": {
+      "test_accuracy": 0.4444444444444444,
+      "test_balanced_accuracy": 0.4444444444444444,
+      "test_f1_macro": 0.4602867581590986,
+      "bootstrap_ci_95": {
+        "mean": 0.44645833333333335,
+        "ci_lower": 0.25,
+        "ci_upper": 0.6291666666666677,
+        "ci_half_width": 0.18958333333333383,
+        "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+      }
+    },
+    "gradient_boosting": {
+      "test_accuracy": 0.4027777777777778,
+      "test_balanced_accuracy": 0.40277777777777785,
+      "test_f1_macro": 0.38073038073038074,
+      "bootstrap_ci_95": {
+        "mean": 0.4011805555555556,
+        "ci_lower": 0.20833333333333334,
+        "ci_upper": 0.529166666666667,
+        "ci_half_width": 0.16041666666666682,
+        "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+      }
+    },
+    "mlp": {
+      "test_accuracy": 0.5138888888888888,
+      "test_balanced_accuracy": 0.513888888888889,
+      "test_f1_macro": 0.489766081871345,
+      "bootstrap_ci_95": {
+        "mean": 0.515625,
+        "ci_lower": 0.4305555555555556,
+        "ci_upper": 0.5989583333333337,
+        "ci_half_width": 0.08420138888888906,
+        "round_independence_note": "Confidence intervals resampled over rounds. Test rounds spaced ~2-3 hours apart under compressed cadence are not fully independent."
+      }
+    }
+  },
+  "leakage_comparison": {
+    "logistic_regression": {
+      "leakage_accuracy": 0.8333333333333334,
+      "chronological_accuracy": 0.6666666666666666,
+      "gap": 0.16666666666666674
+    },
+    "svm_rbf": {
+      "leakage_accuracy": 0.9,
+      "chronological_accuracy": 0.7361111111111112,
+      "gap": 0.16388888888888886
+    },
+    "random_forest": {
+      "leakage_accuracy": 0.9,
+      "chronological_accuracy": 0.4444444444444444,
+      "gap": 0.4555555555555556
+    },
+    "gradient_boosting": {
+      "leakage_accuracy": 0.9166666666666666,
+      "chronological_accuracy": 0.4027777777777778,
+      "gap": 0.5138888888888888
+    },
+    "mlp": {
+      "leakage_accuracy": 0.8,
+      "chronological_accuracy": 0.5138888888888888,
+      "gap": 0.2861111111111112
+    }
+  },
+  "feature_subsets_comparison": {
+    "full": {
+      "num_features": 196,
+      "test_accuracy": 0.4444444444444444
+    },
+    "histogram_only": {
+      "num_features": 80,
+      "test_accuracy": 0.4305555555555556
+    },
+    "calibration_properties": {
+      "num_features": 11,
+      "test_accuracy": 0.3333333333333333
+    }
+  },
+  "confusion_matrix": {
+    "classes": [
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_marrakesh"
+    ],
+    "matrix": [
+      [
+        10,
+        2,
+        12
+      ],
+      [
+        3,
+        16,
+        5
+      ],
+      [
+        18,
+        0,
+        6
+      ]
+    ],
+    "y_true": [
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh"
+    ],
+    "y_pred": [
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_marrakesh",
+      "ibm_kingston",
+      "ibm_kingston",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_marrakesh",
+      "ibm_fez",
+      "ibm_fez",
+      "ibm_marrakesh",
+      "ibm_marrakesh"
+    ]
+  },
+  "top_features": [
+    [
+      "c10_mirror_depth24_delay__prob_011",
+      0.06549622736149695
+    ],
+    [
+      "c10_mirror_depth24_delay__zz_0_1",
+      0.05907314417693863
+    ],
+    [
+      "c10_mirror_depth24_delay__marginal_q0",
+      0.05378506259927283
+    ],
+    [
+      "c10_mirror_depth24_delay__entropy",
+      0.05165526030844659
+    ],
+    [
+      "c10_mirror_depth24_delay__prob_110",
+      0.047487385527464586
+    ],
+    [
+      "c10_mirror_depth24_delay__zz_1_2",
+      0.03685862412605565
+    ],
+    [
+      "c10_mirror_depth24_delay__marginal_q2",
+      0.034264956361622446
+    ],
+    [
+      "c10_mirror_depth24_delay__prob_100",
+      0.03013622736110323
+    ],
+    [
+      "c09_mirror_depth12__zz_1_2",
+      0.025886796730427607
+    ],
+    [
+      "c10_mirror_depth24_delay__zz_0_2",
+      0.02479031451087065
+    ],
+    [
+      "c10_mirror_depth24_delay__marginal_q1",
+      0.02299760050505538
+    ],
+    [
+      "c09_mirror_depth12__marginal_q1",
+      0.02094229990904951
+    ],
+    [
+      "c10_mirror_depth24_delay__prob_000",
+      0.02021928318434379
+    ],
+    [
+      "c07_clifford_depth8__prob_010",
+      0.019917245588649962
+    ],
+    [
+      "c10_mirror_depth24_delay__dist_hellinger",
+      0.019348686418746326
+    ]
+  ]
+}

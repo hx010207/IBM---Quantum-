@@ -1,0 +1,9 @@
+Ablation Dimension,Configuration,Dimensionality,Accuracy
+Feature Representation,Full,196,0.444
+Feature Representation,Histogram Only,80,0.431
+Feature Representation,Calibration Properties,11,0.333
+Sample Shot Count,128 shots / chunk,196,0.820 (AUC=0.850)
+Sample Shot Count,256 shots / chunk,196,0.910 (AUC=0.930)
+Sample Shot Count,512 shots / chunk,196,0.960 (AUC=0.970)
+Sample Shot Count,1024 shots / chunk,196,0.980 (AUC=0.990)
+Sample Shot Count,2048 shots / chunk,196,0.980 (AUC=0.990)

@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-10-10T12:22:57.659693+00:00",
+  "observation_window_rounds": 10,
+  "splits": {
+    "train": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "val": [
+      6,
+      7
+    ],
+    "test": [
+      8,
+      9,
+      10
+    ]
+  },
+  "total_qpu_seconds_consumed": 264.0,
+  "figures": [
+    "fig10_shots_ablation.png",
+    "fig11_feature_importance.png",
+    "fig12_leakage_comparison.png",
+    "fig1_pipeline_threat_model.png",
+    "fig2_circuit_suite.png",
+    "fig3_output_distributions.png",
+    "fig4_pca_embedding.png",
+    "fig5_confusion_matrix.png",
+    "fig6_cross_day_persistence.png",
+    "fig7_drift_heatmap_ibm_fez.png",
+    "fig7_drift_heatmap_ibm_kingston.png",
+    "fig7_drift_heatmap_ibm_marrakesh.png",
+    "fig8_roc_curves.png",
+    "fig9_far_frr_threshold.png"
+  ],
+  "figures_pdf": [
+    "fig10_shots_ablation.pdf",
+    "fig11_feature_importance.pdf",
+    "fig12_leakage_comparison.pdf",
+    "fig1_pipeline_threat_model.pdf",
+    "fig2_circuit_suite.pdf",
+    "fig3_output_distributions.pdf",
+    "fig4_pca_embedding.pdf",
+    "fig5_confusion_matrix.pdf",
+    "fig6_cross_day_persistence.pdf",
+    "fig7_drift_heatmap_ibm_fez.pdf",
+    "fig7_drift_heatmap_ibm_kingston.pdf",
+    "fig7_drift_heatmap_ibm_marrakesh.pdf",
+    "fig8_roc_curves.pdf",
+    "fig9_far_frr_threshold.pdf"
+  ],
+  "figures_csv": [
+    "fig10_shots_ablation_source.csv",
+    "fig11_feature_importance_source.csv",
+    "fig12_leakage_comparison_source.csv",
+    "fig1_pipeline_threat_model_source.csv",
+    "fig2_circuit_suite_source.csv",
+    "fig3_output_distributions_source.csv",
+    "fig4_pca_embedding_source.csv",
+    "fig5_confusion_matrix_source.csv",
+    "fig6_cross_day_persistence_source.csv",
+    "fig7_drift_heatmap_ibm_fez_source.csv",
+    "fig7_drift_heatmap_ibm_kingston_source.csv",
+    "fig7_drift_heatmap_ibm_marrakesh_source.csv",
+    "fig8_roc_curves_source.csv",
+    "fig9_far_frr_threshold_source.csv"
+  ],
+  "tables_csv": [
+    "table1_backends_layouts.csv",
+    "table2_dataset_summary.csv",
+    "table3_e1_models_metrics.csv",
+    "table4_e4_spoofing_metrics.csv",
+    "table5_ablations.csv"
+  ],
+  "tables_tex": [
+    "table1_backends_layouts.tex",
+    "table2_dataset_summary.tex",
+    "table3_e1_models_metrics.tex",
+    "table4_e4_spoofing_metrics.tex",
+    "table5_ablations.tex"
+  ],
+  "captions": true,
+  "audit": true,
+  "results_json": true,
+  "dataset_features_csv": true
+}

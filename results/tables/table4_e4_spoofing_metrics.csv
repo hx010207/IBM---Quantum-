@@ -1,0 +1,13 @@
+Target Backend,Adversary Class,ROC-AUC,EER,TPR @ 1\% FPR,TPR @ 5\% FPR,FAR (at Val Thresh),Attack Acceptance Rate
+ibm_fez,Other_Hardware,0.990,0.042,0.195,0.842,0.000,0.000
+ibm_fez,S0_Ideal,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_fez,S1_Calibration,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_fez,S2_Adaptive,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_kingston,Other_Hardware,0.710,0.406,0.030,0.150,0.417,0.417
+ibm_kingston,S0_Ideal,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_kingston,S1_Calibration,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_kingston,S2_Adaptive,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_marrakesh,Other_Hardware,0.001,0.969,0.000,0.000,1.000,1.000
+ibm_marrakesh,S0_Ideal,1.000,0.000,0.010,0.050,0.000,0.000
+ibm_marrakesh,S1_Calibration,0.186,0.667,0.000,0.000,0.583,0.583
+ibm_marrakesh,S2_Adaptive,0.123,0.750,0.000,0.000,0.667,0.667

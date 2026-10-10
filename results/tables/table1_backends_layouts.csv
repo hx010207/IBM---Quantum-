@@ -1,0 +1,4 @@
+Backend Identifier,Qubits Used,Topology Topology,Transpiler Optimization Level,Scheduling
+ibm_fez,"[137, 147, 146]",Linear 3-Qubit Chain,1,ALAP (delay-aware)
+ibm_kingston,"[89, 90, 91]",Linear 3-Qubit Chain,1,ALAP (delay-aware)
+ibm_marrakesh,"[4, 5, 6]",Linear 3-Qubit Chain,1,ALAP (delay-aware)

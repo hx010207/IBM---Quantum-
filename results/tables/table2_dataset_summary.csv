@@ -1,0 +1,11 @@
+Category,Value
+Total Sample Chunks,960
+Real / Hardware Samples,240
+Simulator Impersonator Samples,720
+Data Provenance Mode,real_hardware
+Training Rounds,"[1, 2, 3, 4, 5]"
+Validation Rounds,"[6, 7]"
+Testing Rounds,"[8, 9, 10]"
+Shots per Circuit,2048 (8 chunks x 256 shots)
+Circuits per Round,10 circuits
+Feature Dimensionality,196 dimensions
