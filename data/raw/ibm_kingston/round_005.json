@@ -774,5 +774,8 @@
       ]
     }
   },
-  "recovery": "transpile_fallback (Qiskit ALAP error resolved via native basis transpile)"
+  "recovery": "transpile_fallback_and_post_hoc_retrieval (Qiskit ALAP error resolved via native basis transpile; properties_snapshot recorded at post-hoc retrieval time 04:35Z rather than execution time 02:58Z)",
+  "retrieval_time_fields": [
+    "properties_snapshot"
+  ]
 }

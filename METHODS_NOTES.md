@@ -221,9 +221,99 @@ A comprehensive implementation audit was conducted on October 10, 2026, confirmi
    - Exactly matches `data/interim/budget_state.json` (discrepancy = 0.000 s).
 
 6. **Log Evidence for Collection Halting at Round 10**:
-   - `pipeline_autonomous.log` records a 361.6-minute (6.03-hour) host sleep beginning at 2026-10-09 23:14 local, which caused a client-side socket name resolution error while polling Kingston Round 10.
+   - `pipeline_autonomous.log` records a 361.6-minute (6.03-hour) host sleep beginning at 2026-10-09 23:14 local (which occurred despite the keep-awake heartbeat), causing a client-side socket name resolution error (`getaddrinfo failed`) while polling Kingston Round 10.
    - Orchestrator safety halt triggered at 2026-10-10 05:14:53 local (`exit code 1`).
    - At agent resumption (~10:30 local), only 1.5 hours remained before the 12:00 local cutoff—insufficient to satisfy the mandatory 2.0-hour inter-round floors for rounds 11 and 12 ($>4.0\,\text{h}$ required).
+
+---
+
+## 15. Implementation Audit Follow-Up: Deep-Dive Diagnostics & Controls (October 10, 2026)
+
+1. **Benchmark Circuit Suite & Feature Extraction Path Verification**:
+   - Canonical circuits defined in `src/qfp/circuits.py` (`CIRCUIT_NAMES`):
+     - `c01_prep_000`: State prep $|000\rangle$, measure all (depth 1).
+     - `c02_prep_111`: State prep $|111\rangle$, $X$ gates on all 3 qubits, measure all (depth 2).
+     - `c03_bell_01`: Bell pair on $(0, 1)$: $H(0) \to CX(0,1)$, measure all (depth 3).
+     - `c04_bell_12`: Bell pair on $(1, 2)$: $H(1) \to CX(1,2)$, measure all (depth 3).
+     - `c05_ghz_012`: GHZ directed $0 \to 1 \to 2$: $H(0) \to CX(0,1) \to CX(1,2)$, measure all (depth 4).
+     - `c06_ghz_210`: GHZ directed $2 \to 1 \to 0$: $H(2) \to CX(2,1) \to CX(1,0)$, measure all (depth 4).
+     - `c07_clifford_depth8`: Seeded random Clifford (seed 42, depth 10, 19 non-barrier ops).
+     - `c08_clifford_depth24`: Two seeded random Cliffords (seeds 52, 62) separated by barrier (depth 23, 46 non-barrier ops).
+     - `c09_mirror_depth12`: Seeded mirror unitary (seed 72, depth 25, 51 non-barrier ops) with central compiler barrier.
+     - `c10_mirror_depth24_delay`: Seeded mirror unitary (seed 82, depth 42, 86 non-barrier ops) with central $7500\,\text{dt}$ ($30\,\mu\text{s}$) idle delay on all 3 qubits.
+   - Note on audit reconciliation: Erroneous names (`c07_ghz_state`, `c08_quantum_volume_depth6`) from prior planning drafts were narrative errors in the preliminary text; the code and data strictly executed `c07_clifford_depth8` and `c08_clifford_depth24`.
+   - Feature prefixes in `data/features/dataset_features.csv`: `c01_prep_000__` through `c10_mirror_depth24_delay__` (19 features each) plus global `readout_` metrics (6 features) = 196 statistical output features.
+   - Real feature extraction implementation: strictly [`src/qfp/features.py`](file:///c:/Users/workh/OneDrive/Desktop/Quantum%20-%20computin/src/qfp/features.py) (`src/features/extraction.py` does not exist).
+
+2. **Diagnosis of Marrakesh & Fez R7-to-R8 Shifts**:
+   - Pipeline parameters across all rounds 5–10:
+     - Physical layout: strictly identical (`[137, 147, 146]` Fez, `[89, 90, 91]` Kingston, `[4, 5, 6]` Marrakesh).
+     - Shots per circuit: strictly 2048 (identical across all rounds and backends).
+     - Chunks: strictly 8 chunks of 256 shots (identical across all rounds and backends).
+     - Circuit ordering: strictly identical (SHA256 order hash `ffeb81ab`).
+     - Transpile path: `alap` across all non-recovered rounds.
+   - Physical cause of Marrakesh R8 shift:
+     - In Round 8 (collected 2026-10-09 13:37 local), physical qubit 5 suffered transient physical excitation/readout degradation: spurious excitations on $|000\rangle$ state prep (`c01_prep_000`) surged to 6.64% (136/2048, with bitstring `010` count = 132 vs baseline 2–14).
+     - IBM automated recalibration at 15:45 local (captured in R9 properties snapshot) registered this physical degradation, with calibrated readout error on qubit 5 jumping from 0.0096 to 0.0361.
+     - By Round 10 (21:01 local), IBM automated recalibration restored qubit 5 readout error to 0.0076, and $|000\rangle$ error counts returned to 10/2048.
+     - Conclusion: The shift matches a **physical hardware fluctuation and subsequent IBM automated recalibration cycle**, NOT a pipeline or software difference.
+
+3. **Circuit Ablation & Simulation Delay Artifact**:
+   - S1/S2 delay configuration: In Qiskit Aer, `AerSimulator.from_backend()` constructs a noise model with `noise_instructions = ['cz', 'id', 'measure', 'reset', 'sx', 'x']`. Noise on `delay` is **False**. Aer treats delays as noiseless identities.
+   - E2 Real vs Simulator Classifier Ablations:
+     - All 10 circuits (196-dim): Logistic Regression AUC = 1.0000 (EER 0.0000); Random Forest AUC = 1.0000 (EER 0.0000); SVM-RBF AUC = 1.0000 (EER 0.0000).
+     - Leave-$c_{10}$-out (177-dim): Logistic Regression AUC = 0.9963 (EER 0.0417); Random Forest AUC = 0.9988 (EER 0.0324); SVM-RBF AUC = 0.9971 (EER 0.0116).
+     - Leave-one-out across $c_{01}\dots c_{09}$: all subsets retain AUC = 1.0000, EER = 0.0000 under Random Forest.
+   - E4 Mahalanobis Spoofing Detector Ablations vs S1 Adversary:
+     - `ibm_fez`: All 10 circuits AUC = 1.0000 (EER 0.0000) $\to$ Leave-$c_{10}$-out AUC = 0.8542 (EER 0.2083). Leaving out any other circuit ($c_1 \dots c_9$) retains AUC = 1.0000.
+     - `ibm_kingston`: All 10 circuits AUC = 1.0000 (EER 0.0000) $\to$ Leave-$c_{10}$-out AUC = 0.6389 (EER 0.3750). Leaving out any other circuit ($c_1 \dots c_9$) retains AUC = 1.0000.
+     - `ibm_marrakesh`: All 10 circuits AUC = 0.1858 (EER 0.6667) $\to$ Leave-$c_{10}$-out AUC = 0.2847 (EER 0.6250) due to severe genuine centroid drift.
+
+4. **Detailed E4 Full-Feature Metrics per Backend & Adversary**:
+   - Fixed validation threshold ($\text{FPR}=0.05$ on rounds 6–7):
+     - `ibm_fez` (threshold = 16.4954, genuine test FRR = 0.4167):
+       - vs Other HW: AUC = 0.9896, EER = 0.0417, FAR = 0.0000
+       - vs S0 (Ideal): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+       - vs S1 (Calib): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+       - vs S2 (Adaptive): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+     - `ibm_kingston` (threshold = 23.5880, genuine test FRR = 0.2083):
+       - vs Other HW: AUC = 0.7101, EER = 0.4062, FAR = 0.4167
+       - vs S0 (Ideal): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+       - vs S1 (Calib): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+       - vs S2 (Adaptive): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+     - `ibm_marrakesh` (threshold = 28.6738, genuine test FRR = 0.9583):
+       - vs Other HW: AUC = 0.0009, EER = 0.9688, FAR = 1.0000
+       - vs S0 (Ideal): AUC = 1.0000, EER = 0.0000, FAR = 0.0000
+       - vs S1 (Calib): AUC = 0.1858, EER = 0.6667, FAR = 0.5833
+       - vs S2 (Adaptive): AUC = 0.1233, EER = 0.7500, FAR = 0.6667
+   - Earlier "AUC 1.000" reconciliation: The perfect AUC 1.000 in preliminary summaries referenced Fez (and Kingston against simulated adversaries S0/S1/S2), but masked the drift degradation on Marrakesh.
+
+5. **Multi-Model Leakage Gap Audit (Random vs Chronological Split)**:
+   - Evaluated on identical pool (120 train / 72 test samples across rounds 1–5 and 8–10, 20 random split trials):
+     - `logistic_regression`: Chronological = 0.6667 | Random = 0.9181 $\pm$ 0.0291 | Gap = **+0.2514 (+25.14 pp)**
+     - `random_forest`: Chronological = 0.4444 | Random = 0.9458 $\pm$ 0.0310 | Gap = **+0.5014 (+50.14 pp)**
+     - `svm_rbf`: Chronological = 0.7361 | Random = 0.9424 $\pm$ 0.0257 | Gap = **+0.2062 (+20.62 pp)**
+     - `gradient_boosting`: Chronological = 0.4028 | Random = 0.9424 $\pm$ 0.0321 | Gap = **+0.5396 (+53.96 pp)**
+     - `mlp`: Chronological = 0.5139 | Random = 0.9028 $\pm$ 0.0285 | Gap = **+0.3889 (+38.89 pp)**
+
+6. **Corrected Recovery Metadata & Like-for-Like Test Sensitivity**:
+   - Tagged records:
+     - `ibm_kingston` Round 5: `transpile_fallback_and_post_hoc_retrieval` (`retrieval_time_fields: ["properties_snapshot"]`).
+     - `ibm_kingston` Round 9: `post_hoc_api_retrieval` (`retrieval_time_fields: ["properties_snapshot", "timestamps", "execution_time_seconds"]`).
+     - `ibm_kingston` Round 10: `post_hoc_api_retrieval` (`retrieval_time_fields: ["properties_snapshot", "timestamps", "execution_time_seconds"]`).
+   - Like-for-like sensitivity on identical clean test chunks ($n=56$ test samples: Fez R8–10, Marrakesh R8–10, Kingston R8):
+     - Logistic Regression: Full features = 0.6250 (All Train) vs 0.6071 (Clean Train, diff: -0.0179); Calibration baseline = 0.4286 (All Train) vs 0.4286 (Clean Train, diff: +0.0000).
+     - SVM-RBF: Full features = 0.8393 vs 0.8214 (diff: -0.0179); Calibration baseline = 0.4286 vs 0.4286 (diff: +0.0000).
+     - Random Forest: Full features = 0.3929 vs 0.4107 (diff: +0.0179); Calibration baseline = 0.4286 vs 0.4286 (diff: +0.0000).
+     - Gradient Boosting: Full features = 0.2500 vs 0.3571 (diff: +0.1071); Calibration baseline = 0.4286 vs 0.4286 (diff: +0.0000).
+
+7. **Exploratory Re-Enrollment Analysis (Rounds 1–7 Enroll, Rounds 8–10 Test)**:
+   - Labeled exploratory; does not replace primary chronological benchmark.
+   - When calibrating against post-gap validation data (Round 7), test FRR decreases significantly:
+     - `ibm_marrakesh`: Test FRR drops from 0.9583 to 0.5000.
+     - `ibm_kingston`: Test FRR drops from 0.2083 to 0.1667.
+     - `ibm_fez`: Test FRR is 0.5417.
+
 
 
 

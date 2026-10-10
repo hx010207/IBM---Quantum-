@@ -813,5 +813,11 @@
       ]
     }
   },
-  "recovery": "post_hoc_api_retrieval (client socket timeout during system sleep; payload fetched via job_id db4gqkcvf2bc73cujge0)"
+  "recovery": "post_hoc_api_retrieval (client socket timeout during system sleep; payload fetched via job_id db4gqkcvf2bc73cujge0)",
+  "retrieval_time_fields": [
+    "properties_snapshot",
+    "start_timestamp",
+    "end_timestamp",
+    "execution_time_seconds"
+  ]
 }
